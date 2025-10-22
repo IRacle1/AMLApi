@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using AMLApi.Api.Enums;
+using AMLApi.Core.Enums;
 
-namespace AMLApi.Api.Objects
+namespace AMLApi.Core.Objects
 {
     public abstract class MaxMode : IEquatable<MaxMode>
     {

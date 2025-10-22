@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace AMLApi.Api.Objects
+namespace AMLApi.Core.Objects
 {
     public abstract class Record : IEquatable<Record>
     {

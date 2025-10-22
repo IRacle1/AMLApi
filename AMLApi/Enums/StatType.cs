@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AMLApi.Api.Enums
+namespace AMLApi.Core.Enums
 {
     public enum StatType
     {

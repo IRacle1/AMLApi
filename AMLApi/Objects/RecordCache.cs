@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AMLApi.Api.Objects
+namespace AMLApi.Core.Objects
 {
     public abstract class RecordCache
     {

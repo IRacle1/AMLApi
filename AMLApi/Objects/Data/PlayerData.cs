@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace AMLApi.Api.Objects.Data
+namespace AMLApi.Core.Objects.Data
 {
     public class PlayerData
     {

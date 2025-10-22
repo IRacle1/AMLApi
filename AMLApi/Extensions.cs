@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using AMLApi.Api.Enums;
-using AMLApi.Api.Objects;
+using AMLApi.Core.Enums;
 
-namespace AMLApi.Api
+namespace AMLApi.Core
 {
     public static class Extensions
     {

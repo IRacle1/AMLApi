@@ -6,9 +6,9 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-using AMLApi.Api.Objects.Data;
+using AMLApi.Core.Objects.Data;
 
-namespace AMLApi.Api.Json
+namespace AMLApi.Core.Json
 {
     internal class SearchResultConverter : JsonConverter<SearchResult>
     {

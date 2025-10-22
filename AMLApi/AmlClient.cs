@@ -6,13 +6,13 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-using AMLApi.Api.Enums;
-using AMLApi.Api.Json;
-using AMLApi.Api.Objects;
-using AMLApi.Api.Objects.Data;
-using AMLApi.Api.Objects.Instances;
+using AMLApi.Core.Json;
+using AMLApi.Core.Objects.Data;
+using AMLApi.Core.Objects;
+using AMLApi.Core.Objects.Instances;
+using AMLApi.Core.Enums;
 
-namespace AMLApi.Api
+namespace AMLApi.Core
 {
     public class AmlClient : IFnafClient
     {

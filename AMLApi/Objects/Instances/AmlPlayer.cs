@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using AMLApi.Api.Enums;
-using AMLApi.Api.Objects.Data;
+using AMLApi.Core;
+using AMLApi.Core.Enums;
+using AMLApi.Core.Objects;
+using AMLApi.Core.Objects.Data;
 
-namespace AMLApi.Api.Objects.Instances
+namespace AMLApi.Core.Objects.Instances
 {
     internal class AmlPlayer : Player
     {

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using AMLApi.Api.Objects.Data;
+using AMLApi.Core.Objects.Data;
 
-namespace AMLApi.Api.Objects.Instances
+namespace AMLApi.Core.Objects.Instances
 {
     internal class AmlRecord : Record
     {
@@ -22,7 +22,7 @@ namespace AMLApi.Api.Objects.Instances
             recordData = data;
 
             this.player = player;
-            this.maxMode = amlClient.CachedMaxModes.First(m => m.Id == data.MaxModeId);
+            maxMode = amlClient.CachedMaxModes.First(m => m.Id == data.MaxModeId);
         }
 
         internal AmlRecord(AmlClient amlClient, RecordData data, MaxMode maxMode)
@@ -31,7 +31,7 @@ namespace AMLApi.Api.Objects.Instances
             recordData = data;
 
             this.maxMode = maxMode;
-            this.player = amlClient.CachedPlayers.First(ply => ply.Guid == data.UId);
+            player = amlClient.CachedPlayers.First(ply => ply.Guid == data.UId);
         }
 
         public override string VideoLink => recordData.VideoLink;
