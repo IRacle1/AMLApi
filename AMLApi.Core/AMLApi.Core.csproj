@@ -8,7 +8,7 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>AMLApi.Core</Title>
     <RepositoryUrl>https://github.com/IRacle1/AMLApi</RepositoryUrl>
-    <Version>1.1.0</Version>
+    <Version>1.1.1</Version>
     <Authors>IRacle</Authors>
     <Company>IRacle</Company>
     <Description>API for All Modes List</Description>
@@ -16,10 +16,18 @@
     <PackageTags>AllModesList;AML</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<PackageIcon>assets\icon.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <None Include="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="assets\icon.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>

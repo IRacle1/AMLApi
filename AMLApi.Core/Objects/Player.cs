@@ -36,6 +36,8 @@ namespace AMLApi.Core.Objects
         public abstract IReadOnlyCollection<Record> RecordsCache { get; }
         public abstract bool RecordsFetched { get; }
 
+        public abstract bool IsPlaceholder { get; }
+
         public abstract int GetRankBy(StatType statType);
         public abstract int GetPointsBy(PointType pointType);
         public abstract int GetMaxPointsBy(PointType pointType);

@@ -67,7 +67,7 @@ namespace AMLApi.Core.Objects.Instances
 
         public override bool RecordsFetched => recordsFetched;
 
-        public bool IsPlaceholder => DiscordId == 0ul;
+        public override bool IsPlaceholder => DiscordId == 0ul;
 
         public override int GetPointsBy(PointType pointType)
         {
