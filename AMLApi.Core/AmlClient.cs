@@ -86,7 +86,7 @@ namespace AMLApi.Core
         {
             int rngPersent = 100 - skillPersent;
 
-            return cachedMaxModes.Values.OrderByDescending(m => m.GetPoints(PointType.Skill) * rngPersent + m.GetPoints(PointType.Rng) * rngPersent);
+            return cachedMaxModes.Values.OrderByDescending(m => m.GetPoints(PointType.Skill) * skillPersent + m.GetPoints(PointType.Rng) * rngPersent);
         }
 
         public async Task<(IReadOnlyCollection<MaxMode>, IReadOnlyCollection<Player>)?> Search(string query)
