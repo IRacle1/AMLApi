@@ -23,8 +23,8 @@ namespace AMLApi.Core.Objects
 
         public abstract int ModesBeaten { get; }
 
-        public abstract string Continent { get; }
-        public abstract string Country { get; }
+        public abstract Continent Continent { get; }
+        public abstract string? Country { get; }
 
         public abstract bool IsAdmin { get; }
         public abstract bool IsManager { get; }

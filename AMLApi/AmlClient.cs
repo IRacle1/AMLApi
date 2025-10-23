@@ -17,12 +17,12 @@ namespace AMLApi.Core
     public class AmlClient : IFnafClient
     {
         private HttpClient httpClient;
-        private static JsonSerializerOptions options = new JsonSerializerOptions();
+        private static JsonSerializerOptions options = new();
 
         public bool IsInit { get; private set; }
 
-        private List<AmlMaxMode> cachedMaxModes = new();
-        private List<AmlPlayer> cachedPlayers = new();
+        private Dictionary<int, AmlMaxMode> cachedMaxModes = new();
+        private Dictionary<Guid, AmlPlayer> cachedPlayers = new();
 
         static AmlClient()
         {
@@ -36,10 +36,11 @@ namespace AMLApi.Core
         }
 
         public const string BaseUrl = "https://aml-api-eta.vercel.app";
+        public const string AvatarUrlFormat = "https://zirlaiexwekjusbhjibc.supabase.co/storage/v1/object/public/avatars/{0}.jpg";
 
-        public IReadOnlyList<MaxMode> CachedMaxModes => cachedMaxModes;
+        public IReadOnlyCollection<MaxMode> MaxModes => cachedMaxModes.Values;
 
-        public IReadOnlyList<Player> CachedPlayers => cachedPlayers;
+        public IReadOnlyCollection<Player> Players => cachedPlayers.Values;
 
         public static async Task<IFnafClient> CreateClient()
         {
@@ -51,82 +52,58 @@ namespace AMLApi.Core
         public async Task RefillCache()
         {
             PurgeCache();
-            await GetOrFetchPlayerLeaderboard(StatType.Skill);
-            await GetOrFetchMaxModes();
+            await UpdatePlayersCache();
+            await UpdateMaxModesCache();
         }
 
-        public void PurgeCache()
+        public Player? GetPlayer(Guid guid)
         {
-            cachedPlayers.Clear();
-            cachedMaxModes.Clear();
-        }
-
-        public async Task<Player?> GetOrFetchPlayer(Guid guid)
-        {
-            if (cachedPlayers.Find(ply => ply.Guid == guid) is AmlPlayer ply)
+            if (cachedPlayers.TryGetValue(guid, out AmlPlayer? ply))
                 return ply;
 
-            AmlPlayer? newPly = await FetchPlayer(guid);
-            if (newPly is not null)
-                cachedPlayers.Add(newPly);
-            return newPly;
+            return null;
         }
 
-        public async Task<IReadOnlyList<Player>> GetOrFetchPlayers()
+        public IEnumerable<Player> GetPlayerLeaderboard(StatType statType)
         {
-            if (cachedPlayers.Count == 0)
-                cachedPlayers.AddRange(await FetchPlayers());
-            return cachedPlayers;
+            return cachedPlayers.Values.OrderBy(ply => ply.GetRankBy(statType));
         }
 
-        public async Task<IEnumerable<Player>> GetOrFetchPlayerLeaderboard(StatType statType)
+        public MaxMode? GetMaxMode(int id)
         {
-            var list = await GetOrFetchPlayers();
-            return list.OrderBy(ply => ply.GetRankBy(statType));
-        }
-
-        public async Task<MaxMode?> GetOrFetchMaxMode(int id)
-        {
-            if (cachedMaxModes.Find(mode => mode.Id == id) is AmlMaxMode maxMode)
+            if (cachedMaxModes.TryGetValue(id, out AmlMaxMode? maxMode))
                 return maxMode;
 
-            AmlMaxMode? newMode = await FetchMaxMode(id);
-            if (newMode is not null)
-                cachedMaxModes.Add(newMode);
-            return newMode;
+            return null;
         }
 
-        public async Task<IReadOnlyList<MaxMode>> GetOrFetchMaxModes()
+        public IReadOnlyCollection<MaxMode> GetOrFetchMaxModes()
         {
-            if (cachedMaxModes.Count == 0)
-                cachedMaxModes.AddRange(await FetchMaxModes());
-
-            return cachedMaxModes;
+            return cachedMaxModes.Values;
         }
 
-        public async Task<IEnumerable<MaxMode>> GetOrFetchMaxModeListByRatio(int skillPersent)
+        public IEnumerable<MaxMode> GetMaxModeListByRatio(int skillPersent)
         {
-            if (cachedMaxModes.Count == 0)
-                cachedMaxModes.AddRange(await FetchMaxModes());
+            int rngPersent = 100 - skillPersent;
 
-            double skillRatio = skillPersent / 100.0;
-            double rngRatio = 1 - skillRatio;
-
-            return cachedMaxModes.OrderByDescending(m => m.GetPoints(PointType.Skill) * skillRatio + m.GetPoints(PointType.Rng) * rngRatio);
+            return cachedMaxModes.Values.OrderByDescending(m => m.GetPoints(PointType.Skill) * rngPersent + m.GetPoints(PointType.Rng) * rngPersent);
         }
 
-        public async Task<(IReadOnlyCollection<MaxMode>, IReadOnlyCollection<Player>)> Search(string query)
+        public async Task<(IReadOnlyCollection<MaxMode>, IReadOnlyCollection<Player>)?> Search(string query)
         {
             if (cachedPlayers.Count == 0)
-                cachedPlayers.AddRange(await FetchPlayers());
+                await UpdatePlayersCache();
 
             var result = await GetResponse<SearchResult>($"/search/{Uri.EscapeDataString(query)}");
 
+            if (result is null)
+                return null;
+
             IReadOnlyCollection<MaxMode> maxModes = result!.MaxModes.Select(a => (MaxMode)new AmlMaxMode(this, a)).ToList();
-            List<Player> players = new List<Player>();
+            List<Player> players = new(result!.Players.Length);
             foreach (var item in result!.Players)
             {
-                if (cachedPlayers.Find(ply => ply.Guid == item.Guid) is Player player)
+                if (cachedPlayers.TryGetValue(item.Guid, out AmlPlayer? player))
                     players.Add(player);
             }
 
@@ -219,6 +196,28 @@ namespace AMLApi.Core
         {
             var result = await GetResponse<FullMaxModeData>($"level/{maxMode.Id}");
             return result!.Records.Select(res => new AmlRecord(this, res, maxMode)).ToList();
+        }
+
+        private async Task UpdateMaxModesCache()
+        {
+            foreach (var item in await FetchMaxModes())
+            {
+                cachedMaxModes.Add(item.Id, item);
+            }
+        }
+
+        private async Task UpdatePlayersCache()
+        {
+            foreach (var item in await FetchPlayers())
+            {
+                cachedPlayers.Add(item.Guid, item);
+            }
+        }
+
+        private void PurgeCache()
+        {
+            cachedPlayers.Clear();
+            cachedMaxModes.Clear();
         }
 
         private async Task<T?> GetResponse<T>(string url)

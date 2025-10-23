@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,6 +25,8 @@ namespace AMLApi.Core.Objects.Instances
             client = amlClient;
             playerData = data;
             DiscordId = ulong.TryParse(data.DiscordId, out ulong res) ? res : 0;
+            AvatarUrl = string.Format(AmlClient.AvatarUrlFormat, Guid.ToString());
+            Continent = Extensions.ContinentFromString(data.Continent);
         }
 
         public override Guid Guid => playerData.Guid;
@@ -36,7 +39,7 @@ namespace AMLApi.Core.Objects.Instances
 
         public override DateTime CreatedAt => playerData.CreatedAt;
 
-        public override string? AvatarUrl => playerData.AvatarUrl;
+        public override string AvatarUrl { get; }
 
         public override string? YoutubeUrl => playerData.YoutubeUrl;
 
@@ -46,9 +49,9 @@ namespace AMLApi.Core.Objects.Instances
 
         public override int ModesBeaten => playerData.ModesBeaten;
 
-        public override string Continent => playerData.Continent;
+        public override Continent Continent { get; }
 
-        public override string Country => playerData.Country;
+        public override string? Country => playerData.Country;
 
         public override bool IsAdmin => playerData.IsAdmin;
 
@@ -63,6 +66,8 @@ namespace AMLApi.Core.Objects.Instances
         public override IReadOnlyCollection<Record> RecordsCache => recordsCache;
 
         public override bool RecordsFetched => recordsFetched;
+
+        public bool IsPlaceholder => DiscordId == 0ul;
 
         public override int GetPointsBy(PointType pointType)
         {

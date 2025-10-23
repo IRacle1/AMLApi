@@ -67,10 +67,10 @@ namespace AMLApi.Core.Objects.Data
         public int ModesBeatenRank { get; set; }
 
         [JsonPropertyName("continent")]
-        public string Continent { get; set; } = null!;
+        public string? Continent { get; set; }
 
         [JsonPropertyName("country")]
-        public string Country { get; set; } = null!;
+        public string? Country { get; set; }
 
         [JsonPropertyName("isAdmin")]
         public bool IsAdmin { get; set; }

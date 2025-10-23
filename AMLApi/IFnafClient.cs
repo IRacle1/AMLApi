@@ -11,23 +11,20 @@ namespace AMLApi.Core
 {
     public interface IFnafClient
     {
-        IReadOnlyList<MaxMode> CachedMaxModes { get; }
-        IReadOnlyList<Player> CachedPlayers { get; }
+        IReadOnlyCollection<MaxMode> MaxModes { get; }
+        IReadOnlyCollection<Player> Players { get; }
 
         Task RefillCache();
-        void PurgeCache();
 
-        Task<Player?> GetOrFetchPlayer(Guid guid);
-        Task<IReadOnlyList<Player>> GetOrFetchPlayers();
-        Task<IEnumerable<Player>> GetOrFetchPlayerLeaderboard(StatType statType);
+        Player? GetPlayer(Guid guid);
+        IEnumerable<Player> GetPlayerLeaderboard(StatType statType);
 
-        Task<MaxMode?> GetOrFetchMaxMode(int id);
-        Task<IReadOnlyList<MaxMode>> GetOrFetchMaxModes();
-        Task<IEnumerable<MaxMode>> GetOrFetchMaxModeListByRatio(int skillPersent);
+        MaxMode? GetMaxMode(int id);
+        IEnumerable<MaxMode> GetMaxModeListByRatio(int skillPersent);
 
         Task<IReadOnlyCollection<Record>> GetOrFetchPlayerRecords(Player player);
         Task<IReadOnlyCollection<Record>> GetOrFetchMaxModeRecords(MaxMode maxMode);
 
-        Task<(IReadOnlyCollection<MaxMode>, IReadOnlyCollection<Player>)> Search(string query);
+        Task<(IReadOnlyCollection<MaxMode>, IReadOnlyCollection<Player>)?> Search(string query);
     }
 }

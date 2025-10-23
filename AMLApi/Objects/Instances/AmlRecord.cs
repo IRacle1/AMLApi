@@ -11,27 +11,24 @@ namespace AMLApi.Core.Objects.Instances
     internal class AmlRecord : Record
     {
         private RecordData recordData;
-        private AmlClient client;
 
         private Player player;
         private MaxMode maxMode;
 
         internal AmlRecord(AmlClient amlClient, RecordData data, Player player)
         {
-            client = amlClient;
             recordData = data;
 
             this.player = player;
-            maxMode = amlClient.CachedMaxModes.First(m => m.Id == data.MaxModeId);
+            maxMode = amlClient.GetMaxMode(data.MaxModeId)!;
         }
 
         internal AmlRecord(AmlClient amlClient, RecordData data, MaxMode maxMode)
         {
-            client = amlClient;
             recordData = data;
 
             this.maxMode = maxMode;
-            player = amlClient.CachedPlayers.First(ply => ply.Guid == data.UId);
+            player = amlClient.GetPlayer(data.UId)!;
         }
 
         public override string VideoLink => recordData.VideoLink;
