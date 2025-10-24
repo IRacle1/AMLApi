@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,22 +13,17 @@ namespace AMLApi.Core.Objects.Instances
     {
         private RecordData recordData;
 
-        private Player player;
-        private MaxMode maxMode;
+        private readonly Player player;
+        private readonly MaxMode maxMode;
 
-        internal AmlRecord(AmlClient amlClient, RecordData data, Player player)
+        internal AmlRecord(IAmlClient amlClient, RecordData data)
         {
             recordData = data;
+            DateUtc = DateTimeOffset.FromUnixTimeMilliseconds(data.DateUtc).UtcDateTime;
+            if (data.TimeTaken is not null)
+                TimeTaken = TimeSpan.FromMilliseconds(data.TimeTaken.Value);
 
-            this.player = player;
             maxMode = amlClient.GetMaxMode(data.MaxModeId)!;
-        }
-
-        internal AmlRecord(AmlClient amlClient, RecordData data, MaxMode maxMode)
-        {
-            recordData = data;
-
-            this.maxMode = maxMode;
             player = amlClient.GetPlayer(data.UId)!;
         }
 
@@ -35,9 +31,9 @@ namespace AMLApi.Core.Objects.Instances
 
         public override int Progress => recordData.Progress ?? 100;
 
-        public override DateTime DateUtc => recordData.DateUtc;
+        public override DateTime DateUtc { get; }
 
-        public override TimeSpan? TimeTaken => recordData.TimeTaken;
+        public override TimeSpan? TimeTaken { get; }
 
         public override bool IsMobile => recordData.IsMobile != 0;
 
@@ -45,7 +41,7 @@ namespace AMLApi.Core.Objects.Instances
 
         public override string? Comment => recordData.Comment;
 
-        public override int FPS => recordData.FPS ?? 60;
+        public override int? FPS => recordData.FPS;
 
         public override bool IsNotificationSent => recordData.IsNotificationSent;
 

@@ -16,7 +16,7 @@ namespace AMLApi.Core.Objects
         public abstract bool IsMobile { get; }
         public abstract bool IsChecked { get; }
         public abstract string? Comment { get; }
-        public abstract int FPS { get; }
+        public abstract int? FPS { get; }
         public abstract bool IsNotificationSent { get; }
 
         public abstract MaxMode MaxMode { get; }

@@ -14,6 +14,5 @@ namespace AMLApi.Core.Objects.Data
 
         [JsonPropertyName("name")]
         public string Name { get; set; } = null!;
-
     }
 }

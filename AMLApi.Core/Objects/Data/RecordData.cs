@@ -22,17 +22,10 @@ namespace AMLApi.Core.Objects.Data
         public int? Progress { get; set; }
 
         [JsonPropertyName("timestamp")]
-        public long DateRaw { get; set; }
-
-        [JsonIgnore]
-        public DateTime DateUtc =>
-            DateTimeOffset.FromUnixTimeMilliseconds(DateRaw).UtcDateTime;
+        public long DateUtc { get; set; }
 
         [JsonPropertyName("timetaken")]
-        public long? TimeTakenRaw { get; set; }
-
-        [JsonIgnore]
-        public TimeSpan? TimeTaken => TimeTakenRaw is null ? null : TimeSpan.FromMilliseconds(TimeTakenRaw.GetValueOrDefault());
+        public long? TimeTaken { get; set; }
 
         [JsonPropertyName("mobile")]
         public int IsMobile { get; set; }

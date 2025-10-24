@@ -7,18 +7,19 @@ using System.Threading.Tasks;
 using AMLApi.Core;
 using AMLApi.Core.Enums;
 using AMLApi.Core.Objects.Data;
+using AMLApi.Core.Objects.Interfaces;
 
 namespace AMLApi.Core.Objects.Instances
 {
-    internal class AmlMaxMode : MaxMode
+    internal class AmlMaxMode : MaxMode, IRecordsCacheHolder
     {
         private MaxModeData maxModeData;
-        private AmlClient client;
+        private IAmlClient client;
         
         internal bool recordsFetched;
         internal HashSet<Record> recordsCache = new();
 
-        internal AmlMaxMode(AmlClient amlClient, MaxModeData data)
+        internal AmlMaxMode(IAmlClient amlClient, MaxModeData data)
         {
             client = amlClient;
             maxModeData = data;
@@ -49,7 +50,7 @@ namespace AMLApi.Core.Objects.Instances
         public override bool IsMaxModeOfTheMonth => maxModeData.IsMaxModeOfTheMonth;
 
         public override IReadOnlyCollection<Record> RecordsCache => recordsCache;
-        
+
         public override bool RecordsFetched => recordsFetched;
 
         public override int GetPoints(PointType pointType)
@@ -66,6 +67,16 @@ namespace AMLApi.Core.Objects.Instances
         public override async Task<IReadOnlyCollection<Record>> GetOrFetchRecords()
         {
             return await client.GetOrFetchMaxModeRecords(this);
+        }
+
+        public void AddRecord(Record record)
+        {
+            recordsCache.Add(record);
+        }
+
+        public void SetFetched()
+        {
+            recordsFetched = true;
         }
     }
 }

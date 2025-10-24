@@ -9,18 +9,19 @@ using AMLApi.Core;
 using AMLApi.Core.Enums;
 using AMLApi.Core.Objects;
 using AMLApi.Core.Objects.Data;
+using AMLApi.Core.Objects.Interfaces;
 
 namespace AMLApi.Core.Objects.Instances
 {
-    internal class AmlPlayer : Player
+    internal class AmlPlayer : Player, IRecordsCacheHolder
     {
         private PlayerData playerData;
-        private AmlClient client;
+        private IAmlClient client;
 
         internal bool recordsFetched;
         internal HashSet<Record> recordsCache = new();
 
-        internal AmlPlayer(AmlClient amlClient, PlayerData data) 
+        internal AmlPlayer(IAmlClient amlClient, PlayerData data) 
         {
             client = amlClient;
             playerData = data;
@@ -106,6 +107,16 @@ namespace AMLApi.Core.Objects.Instances
         public override async Task<IReadOnlyCollection<Record>> GetOrFetchRecords()
         {
             return await client.GetOrFetchPlayerRecords(this);
+        }
+
+        public void AddRecord(Record record)
+        {
+            recordsCache.Add(record);
+        }
+
+        public void SetFetched()
+        {
+            recordsFetched = true;
         }
     }
 }

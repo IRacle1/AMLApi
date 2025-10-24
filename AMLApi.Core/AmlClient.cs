@@ -11,18 +11,20 @@ using AMLApi.Core.Objects.Data;
 using AMLApi.Core.Objects;
 using AMLApi.Core.Objects.Instances;
 using AMLApi.Core.Enums;
+using System.Diagnostics.CodeAnalysis;
+using AMLApi.Core.Objects.Interfaces;
 
 namespace AMLApi.Core
 {
-    public class AmlClient : IFnafClient
+    public class AmlClient : IAmlClient
     {
         private HttpClient httpClient;
         private static JsonSerializerOptions options = new();
 
         public bool IsInit { get; private set; }
 
-        private Dictionary<int, AmlMaxMode> cachedMaxModes = new();
-        private Dictionary<Guid, AmlPlayer> cachedPlayers = new();
+        private Dictionary<int, MaxMode> cachedMaxModes = new();
+        private Dictionary<Guid, Player> cachedPlayers = new();
 
         static AmlClient()
         {
@@ -42,7 +44,7 @@ namespace AMLApi.Core
 
         public IReadOnlyCollection<Player> Players => cachedPlayers.Values;
 
-        public static async Task<IFnafClient> CreateClient()
+        public static async Task<IAmlClient> CreateCachedClient()
         {
             AmlClient client = new();
             await client.RefillCache();
@@ -58,10 +60,17 @@ namespace AMLApi.Core
 
         public Player? GetPlayer(Guid guid)
         {
-            if (cachedPlayers.TryGetValue(guid, out AmlPlayer? ply))
+            if (cachedPlayers.TryGetValue(guid, out Player? ply))
                 return ply;
 
             return null;
+        }
+
+        public bool TryGetPlayer(Guid guid, [NotNullWhen(true)] out Player? player)
+        {
+            bool res = cachedPlayers.TryGetValue(guid, out Player? amlPlayer);
+            player = amlPlayer;
+            return res;
         }
 
         public IEnumerable<Player> GetPlayerLeaderboard(StatType statType)
@@ -71,15 +80,17 @@ namespace AMLApi.Core
 
         public MaxMode? GetMaxMode(int id)
         {
-            if (cachedMaxModes.TryGetValue(id, out AmlMaxMode? maxMode))
+            if (cachedMaxModes.TryGetValue(id, out MaxMode? maxMode))
                 return maxMode;
 
             return null;
         }
 
-        public IReadOnlyCollection<MaxMode> GetOrFetchMaxModes()
+        public bool TryGetMaxMode(int id, [NotNullWhen(true)] out MaxMode? maxMode)
         {
-            return cachedMaxModes.Values;
+            bool res = cachedMaxModes.TryGetValue(id, out MaxMode? amlMaxMode);
+            maxMode = amlMaxMode;
+            return res;
         }
 
         public IEnumerable<MaxMode> GetMaxModeListByRatio(int skillPersent)
@@ -103,7 +114,7 @@ namespace AMLApi.Core
             List<Player> players = new(result!.Players.Length);
             foreach (var item in result!.Players)
             {
-                if (cachedPlayers.TryGetValue(item.Guid, out AmlPlayer? player))
+                if (cachedPlayers.TryGetValue(item.Guid, out Player? player))
                     players.Add(player);
             }
 
@@ -118,17 +129,17 @@ namespace AMLApi.Core
             var records = await FetchPlayerRecords(player);
             foreach (var item in records)
             {
-                if (item.MaxMode is AmlMaxMode amlMaxMode)
-                    amlMaxMode.recordsCache.Add(item);
+                if (item.MaxMode is IRecordsCacheHolder maxModeCacheHolder)
+                    maxModeCacheHolder.AddRecord(item);
             }
 
-            if (player is AmlPlayer amlPlayer)
+            if (player is IRecordsCacheHolder playerCacheHolder)
             {
                 foreach (var item in records)
                 {
-                    amlPlayer.recordsCache.Add(item);
+                    playerCacheHolder.AddRecord(item);
                 }
-                amlPlayer.recordsFetched = true;
+                playerCacheHolder.SetFetched();
             }
 
             return records;
@@ -142,22 +153,23 @@ namespace AMLApi.Core
             var records = await FetchMaxModeRecords(maxMode);
             foreach (var item in records)
             {
-                if (item.Player is AmlPlayer amlPlayer)
-                    amlPlayer.recordsCache.Add(item);
+                if (item.Player is IRecordsCacheHolder playerCacheHolder)
+                    playerCacheHolder.AddRecord(item);
             }
 
-            if (maxMode is AmlMaxMode amlMaxMode)
+            if (maxMode is IRecordsCacheHolder maxModeCacheHolder)
             {
                 foreach (var item in records)
                 {
-                    amlMaxMode.recordsCache.Add(item);
+                    maxModeCacheHolder.AddRecord(item);
                 }
-                amlMaxMode.recordsFetched = true;
+                maxModeCacheHolder.SetFetched();
             }
 
             return records;
         }
 
+        // TODO: легаси, подумать над rest api без кеша
         private async Task<AmlMaxMode?> FetchMaxMode(int id)
         {
             var result = await GetResponse<FullMaxModeData>($"/level/{id}");
@@ -166,6 +178,7 @@ namespace AMLApi.Core
             return new AmlMaxMode(this, result.Data);
         }
 
+        // TODO: сейм
         private async Task<AmlPlayer?> FetchPlayer(Guid guid)
         {
             var result = await GetResponse<PlayerData>($"/player/{guid}");
@@ -174,28 +187,43 @@ namespace AMLApi.Core
             return new AmlPlayer(this, result);
         }
 
-        private async Task<List<AmlPlayer>> FetchPlayers()
+        private async Task<List<Player>> FetchPlayers()
         {
             var result = await GetResponse<PlayerData[]>($"/players/skill/page/1");
-            return result!.Select(ply => new AmlPlayer(this, ply)).ToList();
+            return result!.Select(CreatePlayer).ToList();
         }
 
-        private async Task<List<AmlMaxMode>> FetchMaxModes()
+        private async Task<List<MaxMode>> FetchMaxModes()
         {
             var result = await GetResponse<MaxModeData[]>("/levels/ml/page/1");
-            return result!.Select(a => new AmlMaxMode(this, a)).ToList();
+            return result!.Select(CreateMaxMode).ToList();
         }
 
-        private async Task<List<AmlRecord>> FetchPlayerRecords(Player player)
+        private async Task<List<Record>> FetchPlayerRecords(Player player)
         {
             var result = await GetResponse<RecordData[]>($"player/{player.Guid}/records/skillValue");
-            return result!.Select(res => new AmlRecord(this, res, player)).ToList();
+            return result!.Select(CreateRecord).ToList();
         }
 
-        private async Task<List<AmlRecord>> FetchMaxModeRecords(MaxMode maxMode)
+        private async Task<List<Record>> FetchMaxModeRecords(MaxMode maxMode)
         {
             var result = await GetResponse<FullMaxModeData>($"level/{maxMode.Id}");
-            return result!.Records.Select(res => new AmlRecord(this, res, maxMode)).ToList();
+            return result!.Records.Select(CreateRecord).ToList();
+        }
+
+        private Player CreatePlayer(PlayerData data)
+        {
+            return new AmlPlayer(this, data);
+        }
+
+        private MaxMode CreateMaxMode(MaxModeData data)
+        {
+            return new AmlMaxMode(this, data);
+        }
+
+        private Record CreateRecord(RecordData data)
+        {
+            return new AmlRecord(this, data);
         }
 
         private async Task UpdateMaxModesCache()
