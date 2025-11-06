@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace AMLApi.Core.Objects.Data
+namespace AMLApi.Core.Data
 {
     public class SearchResult
     {

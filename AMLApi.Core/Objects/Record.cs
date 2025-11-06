@@ -1,34 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
+﻿using AMLApi.Core.Data;
 
 namespace AMLApi.Core.Objects
 {
     public abstract class Record : IEquatable<Record>
     {
-        public abstract string VideoLink { get; }
-        public abstract int Progress { get; }
-        public abstract DateTime DateUtc { get; }
-        public abstract TimeSpan? TimeTaken { get; } 
-        public abstract bool IsMobile { get; }
-        public abstract bool IsChecked { get; }
-        public abstract string? Comment { get; }
-        public abstract int? FPS { get; }
-        public abstract bool IsNotificationSent { get; }
+        protected readonly RecordData recordData;
 
-        public abstract MaxMode MaxMode { get; }
-        public abstract Player Player { get; }
+        protected Record(Record record)
+            : this(record.recordData)
+        {
+        }
+
+        protected Record(RecordData data)
+        {
+            recordData = data;
+            DateUtc = DateTimeOffset.FromUnixTimeMilliseconds(data.DateUtc).UtcDateTime;
+            if (data.TimeTaken is not null)
+                TimeTaken = TimeSpan.FromMilliseconds(data.TimeTaken.Value);
+        }
+
+        public Guid PlayerGuid => recordData.UId;
+        public int MaxModeId => recordData.MaxModeId;
+
+        public string VideoLink => recordData.VideoLink;
+
+        public int Progress => recordData.Progress ?? 100;
+
+        public DateTime DateUtc { get; }
+        public TimeSpan? TimeTaken { get; }
+
+        public bool IsMobile => recordData.IsMobile != 0;
+        public bool IsChecked => recordData.IsChecked;
+
+        public string? Comment => recordData.Comment;
+
+        public int? FPS => recordData.FPS;
+
+        public bool IsNotificationSent => recordData.IsNotificationSent;
+
+        public abstract Task<MaxMode> GetMaxMode();
+        public abstract Task<Player> GetPlayer();
 
         public bool Equals(Record? other)
         {
             if (other == null)
                 return false;
 
-            return MaxMode.Equals(other.MaxMode) && 
-                Player.Equals(other.Player);
+            return MaxModeId == other.MaxModeId && 
+                PlayerGuid == other.PlayerGuid;
         }
 
         public override bool Equals(object? obj)
@@ -38,12 +57,12 @@ namespace AMLApi.Core.Objects
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(MaxMode.GetHashCode(), Player.GetHashCode());
+            return HashCode.Combine(MaxModeId.GetHashCode(), PlayerGuid.GetHashCode());
         }
 
         public override string ToString()
         {
-            return MaxMode.ToString() + " + " + Player.ToString();
+            return MaxModeId.ToString() + " + " + PlayerGuid.ToString();
         }
     }
 }

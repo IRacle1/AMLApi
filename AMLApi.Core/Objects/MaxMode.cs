@@ -1,37 +1,63 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using AMLApi.Core.Data;
 using AMLApi.Core.Enums;
 
 namespace AMLApi.Core.Objects
 {
     public abstract class MaxMode : IEquatable<MaxMode>
     {
-        public abstract int Id { get; }
-        public abstract string Name { get; }
-        public abstract string Creator { get; }
-        public abstract string Length { get; }
-        public abstract string VerificationVideoUrl { get; }
+        protected readonly MaxModeData maxModeData;
 
-        public abstract string GameName { get; }
-        public abstract string GameUrl { get; }
+        protected MaxMode(MaxMode maxMode)
+            : this(maxMode.maxModeData)
+        {
+        }
 
-        public abstract int Top { get; }
+        protected MaxMode(MaxModeData data)
+        {
+            maxModeData = data;
+            VerificationVideoUrl = $"https://youtu.be/{data.VideoId}";
+        }
 
-        public abstract bool IsSelfImposed { get; }
-        public abstract bool IsPrePatch { get; }
-        public abstract bool IsExtra { get; }
-        public abstract bool IsMaxModeOfTheMonth { get; }
+        public int Id => maxModeData.Id;
+        public string Name => maxModeData.Name;
+        public string Creator => maxModeData.Creator;
+        public string Length => maxModeData.Length;
 
-        public abstract IReadOnlyCollection<Record> RecordsCache { get; }
-        public abstract bool RecordsFetched { get; }
+        public string VerificationVideoUrl { get; }
 
-        public abstract int GetPoints(PointType pointsType);
+        public string GameName => maxModeData.GameName;
+        public string GameUrl => maxModeData.GameUrl;
 
-        public abstract Task<IReadOnlyCollection<Record>> GetOrFetchRecords();
+        public int Top => maxModeData.Top;
+
+        public bool IsSelfImposed => maxModeData.IsSelfImposed;
+        public bool IsPrePatch => maxModeData.IsPrePatch;
+        public bool IsExtra => maxModeData.IsExtra;
+        public bool IsMaxModeOfTheMonth => maxModeData.IsMaxModeOfTheMonth;
+
+        public abstract Task<IReadOnlyCollection<Record>> GetRecords();
+
+        public int GetPoints(PointType pointType)
+        {
+            int res = 0;
+            if (pointType.HasFlag(PointType.Rng))
+                res += maxModeData.RngPoints;
+            if (pointType.HasFlag(PointType.Skill))
+                res += maxModeData.SkillPoints;
+
+            return res;
+        }
+
+        public double GetPointsByRatio(int skillRatio)
+        {
+            if (skillRatio < 0 || skillRatio > 100)
+                throw new ArgumentOutOfRangeException(nameof(skillRatio));
+
+            double skillScale = skillRatio / 100.0;
+            double rngScale = 1 - skillScale;
+
+            return skillScale * maxModeData.SkillPoints + rngScale * maxModeData.RngPoints;
+        }
 
         public bool Equals(MaxMode? other)
         {

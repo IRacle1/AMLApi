@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace AMLApi.Core.Objects.Data
+namespace AMLApi.Core.Data
 {
     public class MaxModeData
     {
@@ -20,9 +20,6 @@ namespace AMLApi.Core.Objects.Data
 
         [JsonPropertyName("mmlength")]
         public string Length { get; set; } = string.Empty;
-
-        [JsonIgnore]
-        public string VerificationVideoUrl => $"https://youtu.be/{VideoId}";
 
         [JsonPropertyName("videoID")]
         public string? VideoId { get; set; }

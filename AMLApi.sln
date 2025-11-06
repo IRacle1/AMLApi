@@ -5,6 +5,8 @@ VisualStudioVersion = 17.14.36408.4
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AMLApi.Core", "AMLApi.Core\AMLApi.Core.csproj", "{F6B8015E-B161-4280-A95B-3E18CFF0E019}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AMLApi.Tests", "AMLApi.Tests\AMLApi.Tests.csproj", "{E9EAD1C8-EE88-4C04-88B8-1D28D6593B4F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{F6B8015E-B161-4280-A95B-3E18CFF0E019}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6B8015E-B161-4280-A95B-3E18CFF0E019}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6B8015E-B161-4280-A95B-3E18CFF0E019}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9EAD1C8-EE88-4C04-88B8-1D28D6593B4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9EAD1C8-EE88-4C04-88B8-1D28D6593B4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9EAD1C8-EE88-4C04-88B8-1D28D6593B4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9EAD1C8-EE88-4C04-88B8-1D28D6593B4F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

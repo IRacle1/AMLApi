@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace AMLApi.Core.Objects.Data
+namespace AMLApi.Core.Data
 {
     public class RecordData
     {
@@ -41,5 +41,11 @@ namespace AMLApi.Core.Objects.Data
 
         [JsonPropertyName("isNotificationSent")]
         public bool IsNotificationSent { get; set; }
+
+        [JsonPropertyName("players")]
+        public PlayerData? Player { get; set; }
+
+        [JsonPropertyName("levels")]
+        public ShortMaxModeData? MaxMode { get; set; }
     }
 }

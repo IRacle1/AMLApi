@@ -1,48 +1,96 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using AMLApi.Core.Data;
 using AMLApi.Core.Enums;
 
 namespace AMLApi.Core.Objects
 {
     public abstract class Player : IEquatable<Player>
     {
-        public abstract Guid Guid { get; }
-        public abstract int Id { get; }
-        public abstract string Name { get; }
-        public abstract string Email { get; }
-        public abstract DateTime CreatedAt { get; }
+        protected readonly PlayerData playerData;
 
-        public abstract string? AvatarUrl { get; }
-        public abstract string? YoutubeUrl { get; }
-        public abstract string? DiscordName { get; }
-        public abstract ulong DiscordId { get; }
+        protected Player(Player player)
+            : this(player.playerData)
+        {
+        }
 
-        public abstract int ModesBeaten { get; }
+        protected Player(PlayerData data)
+        {
+            playerData = data;
+            DiscordId = ulong.TryParse(data.DiscordId, out ulong res) ? res : 0;
+            IsPlaceholder = DiscordId == 0;
+            AvatarUrl = string.Format(AvatarUrlFormat, Guid.ToString());
+            Continent = Extensions.ContinentFromString(data.Continent);
+        }
 
-        public abstract Continent Continent { get; }
-        public abstract string? Country { get; }
+        public const string AvatarUrlFormat = "https://zirlaiexwekjusbhjibc.supabase.co/storage/v1/object/public/avatars/{0}.jpg";
 
-        public abstract bool IsAdmin { get; }
-        public abstract bool IsManager { get; }
-        public abstract bool IsBanned { get; }
-        public abstract bool IsHidden { get; }
+        public Guid Guid => playerData.Guid;
+        public int Id => playerData.Id;
+        public string Name => playerData.Name;
+        public string Email => playerData.Email;
+        public DateTime CreatedAt => playerData.CreatedAt;
 
-        public abstract string? Clan { get; }
+        public string AvatarUrl { get; }
+        public string? YoutubeUrl => playerData.YoutubeUrl;
+        public string? DiscordName => playerData.DiscordName;
+        public ulong DiscordId { get; }
 
-        public abstract IReadOnlyCollection<Record> RecordsCache { get; }
-        public abstract bool RecordsFetched { get; }
+        public int ModesBeaten => playerData.ModesBeaten;
 
-        public abstract bool IsPlaceholder { get; }
+        public Continent Continent { get; }
+        public string? Country => playerData.Country;
 
-        public abstract int GetRankBy(StatType statType);
-        public abstract int GetPointsBy(PointType pointType);
-        public abstract int GetMaxPointsBy(PointType pointType);
+        public bool IsAdmin => playerData.IsAdmin;
+        public bool IsManager => playerData.IsManager;
+        public bool IsBanned => playerData.IsBanned;
+        public bool IsHidden => playerData.IsHidden;
 
-        public abstract Task<IReadOnlyCollection<Record>> GetOrFetchRecords();
+        public string? Clan => playerData.Clan;
+
+        public bool IsPlaceholder { get; }
+
+        public abstract Task<IReadOnlyCollection<Record>> GetRecords();
+
+        public int GetPointsBy(PointType pointType)
+        {
+            int res = 0;
+            if (pointType.HasFlag(PointType.Rng))
+                res += playerData.RngPoints ?? 0;
+            if (pointType.HasFlag(PointType.Skill))
+                res += playerData.SkillPoints ?? 0;
+
+            return res;
+        }
+
+        public int GetStatValue(StatType statType)
+        {
+            if (statType == StatType.MaxModeBeaten)
+                return ModesBeaten;
+
+            return GetPointsBy((PointType)(int)statType);
+        }
+
+        public int GetMaxPointsBy(PointType pointType)
+        {
+            int res = 0;
+            if (pointType.HasFlag(PointType.Rng))
+                res += playerData.RngMaxPoints;
+            if (pointType.HasFlag(PointType.Skill))
+                res += playerData.SkillMaxPoints;
+
+            return res;
+        }
+
+        public int? GetRankBy(StatType statType)
+        {
+            return statType switch
+            {
+                StatType.Skill => playerData.SkillRank,
+                StatType.Rng => playerData.RngRank,
+                StatType.Overall => playerData.TotalRank,
+                StatType.MaxModeBeaten => playerData.ModesBeatenRank,
+                _ => -1,
+            };
+        }
 
         public bool Equals(Player? other)
         {

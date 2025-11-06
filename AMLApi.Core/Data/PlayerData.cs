@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace AMLApi.Core.Objects.Data
+namespace AMLApi.Core.Data
 {
     public class PlayerData
     {
@@ -37,22 +37,22 @@ namespace AMLApi.Core.Objects.Data
         public string? DiscordId { get; set; }
 
         [JsonPropertyName("totalSkillpt")]
-        public int SkillPoints { get; set; }
+        public int? SkillPoints { get; set; }
 
         [JsonPropertyName("skillrank")]
-        public int SkillRank { get; set; }
+        public int? SkillRank { get; set; }
 
         [JsonPropertyName("totalRNGpt")]
-        public int RngPoints { get; set; }
+        public int? RngPoints { get; set; }
 
         [JsonPropertyName("rngrank")]
-        public int RngRank { get; set; }
+        public int? RngRank { get; set; }
 
         [JsonPropertyName("rating")]
         public int TotalPoints { get; set; }
 
         [JsonPropertyName("overallRank")]
-        public int TotalRank { get; set; }
+        public int? TotalRank { get; set; }
 
         [JsonPropertyName("skillMaxPt")]
         public int SkillMaxPoints { get; set; }
