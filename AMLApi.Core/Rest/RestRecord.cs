@@ -1,4 +1,5 @@
-﻿using AMLApi.Core.Data;
+﻿using AMLApi.Core.Base;
+using AMLApi.Core.Data;
 
 namespace AMLApi.Core.Rest
 {

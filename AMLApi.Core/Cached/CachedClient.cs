@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
+using AMLApi.Core.Base;
 using AMLApi.Core.Cached.Instances;
 using AMLApi.Core.Enums;
 
@@ -9,7 +10,7 @@ namespace AMLApi.Core.Cached
     {
         public static async Task<CachedClient> CreateClient()
         {
-            BaseAmlClient baseClient = new BaseAmlClient();
+            BaseAmlClient baseClient = BaseAmlClient.CreateClient();
             CachedClient client = new CachedAmlClient(baseClient);
             await client.RefillCache();
             return client;

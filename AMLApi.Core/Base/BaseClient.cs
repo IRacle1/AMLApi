@@ -17,7 +17,7 @@ namespace AMLApi.Core.Base
             options.Converters.Add(new SearchResultConverter());
         }
 
-        internal BaseAmlClient()
+        private BaseAmlClient()
         {
             httpClient = new();
             httpClient.BaseAddress = new Uri(BaseUrl);

@@ -1,4 +1,5 @@
-﻿using AMLApi.Core.Data;
+﻿using AMLApi.Core.Base;
+using AMLApi.Core.Data;
 using AMLApi.Core.Enums;
 using AMLApi.Core.Rest.Instances;
 
@@ -8,7 +9,7 @@ namespace AMLApi.Core.Rest
     {
         public static RestClient CreateClient()
         {
-            BaseAmlClient client = new BaseAmlClient();
+            BaseAmlClient client = BaseAmlClient.CreateClient();
             return new RestAmlClient(client);
         }
 

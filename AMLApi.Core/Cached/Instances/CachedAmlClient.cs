@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
+using AMLApi.Core.Base;
 using AMLApi.Core.Cached.Interfaces;
 using AMLApi.Core.Data;
 using AMLApi.Core.Enums;
