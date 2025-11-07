@@ -1,3 +1,4 @@
+using AMLApi.Core.Base;
 using AMLApi.Core.Enums;
 using AMLApi.Core.Rest;
 
@@ -20,8 +21,9 @@ namespace AMLApi.Tests
         public async Task GetMaxMode_ValidProperties()
         {
             RestClient client = clientFixture.GetRestClient();
+
             // ultimatum
-            MaxMode maxMode = await client.FetchMaxMode(9);
+            RestMaxMode maxMode = await client.FetchMaxMode(9);
 
             output.WriteLine("Max mode: {0}", maxMode);
 
@@ -45,7 +47,7 @@ namespace AMLApi.Tests
             RestClient client = clientFixture.GetRestClient();
 
             // hp npg rv
-            MaxMode maxMode = await client.FetchMaxMode(425);
+            RestMaxMode maxMode = await client.FetchMaxMode(425);
 
             Assert.NotNull(maxMode);
 
@@ -112,7 +114,7 @@ namespace AMLApi.Tests
         [InlineData("1f30ece4-bfd2-40e7-8b52-855ab7cffde3")] // serd
         [InlineData("0bfc57bc-7c6f-4bb9-9a1e-de189dde38b5")] // ultament
         [InlineData("1d5fcf64-5686-45e8-b0b8-1402d2cdef44")] // meee :3
-        public async Task Records_ValidPlayerRecord(string rawGuid)
+        public async Task Records_ValidPlayerRecords(string rawGuid)
         {
             RestClient client = clientFixture.GetRestClient();
 
@@ -130,6 +132,29 @@ namespace AMLApi.Tests
                 Assert.NotNull(record.VideoLink);
 
                 Assert.Equal(guid, record.PlayerGuid);
+            }
+        }
+
+        [Theory]
+        [InlineData(89)] // ems
+        [InlineData(171)] // 50/20 ndc vanilla
+        public async Task Records_ValidMaxModeRecords(int id)
+        {
+            RestClient client = clientFixture.GetRestClient();
+
+            RestMaxMode maxMode = await client.FetchMaxMode(id);
+
+            output.WriteLine("MaxMode: {0}", maxMode);
+
+            Assert.True(maxMode.TryGetRecordsNoFetch(out var records));
+
+            foreach (RestRecord record in records!)
+            {
+                output.WriteLine("Record: {0}", record);
+
+                Assert.NotNull(record.VideoLink);
+
+                Assert.Equal(id, record.MaxModeId);
             }
         }
     }

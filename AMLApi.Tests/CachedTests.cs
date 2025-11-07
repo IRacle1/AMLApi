@@ -1,5 +1,7 @@
+using AMLApi.Core.Base;
 using AMLApi.Core.Cached;
 using AMLApi.Core.Enums;
+using AMLApi.Core.Rest;
 
 using Xunit.Abstractions;
 
@@ -115,6 +117,70 @@ namespace AMLApi.Tests
                 Assert.False(lastPlayer.GetRankBy(statType) > list[i].GetRankBy(statType));
 
                 lastPlayer = list[i];
+            }
+        }
+
+        [Theory]
+        [InlineData("1f30ece4-bfd2-40e7-8b52-855ab7cffde3")] // serd
+        [InlineData("0bfc57bc-7c6f-4bb9-9a1e-de189dde38b5")] // ultament
+        [InlineData("1d5fcf64-5686-45e8-b0b8-1402d2cdef44")] // meee :3
+        public async Task Records_ValidPlayerRecords(string rawGuid)
+        {
+            CachedClient client = await clientFixture.GetCachedClient();
+
+            Guid guid = Guid.Parse(rawGuid);
+            CachedPlayer? player = client.GetPlayer(guid);
+
+            output.WriteLine("Player: {0}", player);
+
+            Assert.NotNull(player);
+
+            IReadOnlyCollection<CachedRecord> records = await player.GetRecords();
+
+            foreach (CachedRecord record in records)
+            {
+                output.WriteLine("Record: {0}", record);
+
+                Assert.NotNull(record.VideoLink);
+
+                Assert.Equal(guid, record.PlayerGuid);
+
+                Assert.NotNull(record.MaxMode);
+                Assert.Equal(record.MaxModeId, record.MaxMode.Id);
+
+                Assert.Equal(player, record.Player);
+            }
+        }
+
+        [Theory]
+        [InlineData(89)] // esp
+        [InlineData(171)] // 50/20 ndc vanilla
+        public async Task Records_ValidMaxModeRecords(int id)
+        {
+            CachedClient client = await clientFixture.GetCachedClient();
+
+            CachedMaxMode? maxMode = client.GetMaxMode(id);
+
+            output.WriteLine("MaxMode: {0}", maxMode);
+
+            Assert.NotNull(maxMode);
+
+            var records = await maxMode.GetRecords();
+
+            Assert.NotNull(records);
+
+            foreach (CachedRecord record in records!)
+            {
+                output.WriteLine("Record: {0}", record);
+
+                Assert.NotNull(record.VideoLink);
+
+                Assert.Equal(id, record.MaxModeId);
+
+                Assert.NotNull(record.Player);
+                Assert.Equal(record.PlayerGuid, record.Player.Guid);
+
+                Assert.Equal(maxMode, record.MaxMode);
             }
         }
     }
