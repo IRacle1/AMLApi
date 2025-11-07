@@ -19,7 +19,7 @@ namespace AMLApi.Core.Data
         public string Name { get; set; } = null!;
 
         [JsonPropertyName("email")]
-        public string Email { get; set; } = null!;
+        public string? Email { get; set; } = null!;
 
         [JsonPropertyName("created_at")]
         public DateTime CreatedAt { get; set; }

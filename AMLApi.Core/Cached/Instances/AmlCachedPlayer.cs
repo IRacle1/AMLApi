@@ -5,22 +5,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using AMLApi.Core.Cached.Interfaces;
 using AMLApi.Core.Data;
 using AMLApi.Core.Enums;
-using AMLApi.Core.Objects.Cached;
-using AMLApi.Core.Objects.Cached.Interfaces;
+using AMLApi.Core.Objects;
 
-namespace AMLApi.Core.Objects.Cached.Instances
+namespace AMLApi.Core.Cached.Instances
 {
-    internal class AmlCachedPlayer : CachedPlayer, IRecordsCacheHolder
+    internal class AmlCachedPlayer : CachedPlayer, ICacheRecordsHolder
     {
-        private CachedClient client;
+        protected CachedClient client;
+        private bool recordsFetched;
+        private readonly HashSet<CachedRecord> recordsCache = new();
 
-        internal bool recordsFetched;
-        internal HashSet<CachedRecord> recordsCache = new();
-
-        internal AmlCachedPlayer(CachedClient amlClient, Player player) 
-            : base(player)
+        internal AmlCachedPlayer(CachedClient amlClient, PlayerData data) 
+            : base(data)
         {
             client = amlClient;
         }
@@ -28,11 +27,6 @@ namespace AMLApi.Core.Objects.Cached.Instances
         public override IReadOnlyCollection<CachedRecord> RecordsCache => recordsCache;
 
         public override bool RecordsFetched => recordsFetched;
-
-        public override async Task<IReadOnlyCollection<Record>> GetRecords()
-        {
-            return await client.GetOrFetchPlayerRecords(this);
-        }
 
         public void AddRecord(CachedRecord record)
         {
@@ -42,6 +36,11 @@ namespace AMLApi.Core.Objects.Cached.Instances
         public void SetFetched()
         {
             recordsFetched = true;
+        }
+
+        public override Task<IReadOnlyCollection<CachedRecord>> GetRecords()
+        {
+            return client.GetOrFetchPlayerRecords(this);
         }
     }
 }

@@ -7,11 +7,6 @@ namespace AMLApi.Core.Objects
     {
         protected readonly PlayerData playerData;
 
-        protected Player(Player player)
-            : this(player.playerData)
-        {
-        }
-
         protected Player(PlayerData data)
         {
             playerData = data;
@@ -26,7 +21,7 @@ namespace AMLApi.Core.Objects
         public Guid Guid => playerData.Guid;
         public int Id => playerData.Id;
         public string Name => playerData.Name;
-        public string Email => playerData.Email;
+        public string? Email => playerData.Email;
         public DateTime CreatedAt => playerData.CreatedAt;
 
         public string AvatarUrl { get; }
@@ -47,8 +42,6 @@ namespace AMLApi.Core.Objects
         public string? Clan => playerData.Clan;
 
         public bool IsPlaceholder { get; }
-
-        public abstract Task<IReadOnlyCollection<Record>> GetRecords();
 
         public int GetPointsBy(PointType pointType)
         {

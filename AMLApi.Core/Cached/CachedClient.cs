@@ -5,19 +5,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using AMLApi.Core.Cached.Instances;
 using AMLApi.Core.Enums;
 using AMLApi.Core.Objects;
-using AMLApi.Core.Objects.Cached;
-using AMLApi.Core.Objects.Rest;
 
-namespace AMLApi.Core
+namespace AMLApi.Core.Cached
 {
     public abstract class CachedClient
     {
         public static async Task<CachedClient> CreateClient()
         {
-            RestClient restClient = RestClient.CreateClient();
-            CachedClient client = new CachedAmlClient(restClient);
+            BaseAmlClient baseClient = new BaseAmlClient();
+            CachedClient client = new CachedAmlClient(baseClient);
             await client.RefillCache();
             return client;
         }

@@ -6,18 +6,23 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 
 using AMLApi.Core.Data;
-using AMLApi.Core.Objects.Rest;
+using AMLApi.Core.Objects;
 
-namespace AMLApi.Core.Objects.Cached
+namespace AMLApi.Core.Cached
 {
     public abstract class CachedRecord : Record
     {
-        protected CachedRecord(Record record) :
-            base(record)
+        protected CachedRecord(RecordData data) :
+            base(data)
         {
         }
 
         public abstract CachedMaxMode MaxMode { get; }
         public abstract CachedPlayer Player { get; }
+
+        public override string ToString()
+        {
+            return MaxMode.ToString() + ": " + Player.ToString();
+        }
     }
 }

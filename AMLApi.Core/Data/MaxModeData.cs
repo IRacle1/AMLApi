@@ -50,5 +50,23 @@ namespace AMLApi.Core.Data
 
         [JsonPropertyName("mmotm")]
         public bool IsMaxModeOfTheMonth { get; set; }
+
+        [JsonPropertyName("aim")]
+        public int AimSkillset { get; set; }
+
+        [JsonPropertyName("greenrun")]
+        public int GreenrunSkillset { get; set; }
+
+        [JsonPropertyName("speed")]
+        public int SpeedSkillset { get; set; }
+
+        [JsonPropertyName("keyboard")]
+        public int KeyboardSkillset { get; set; }
+
+        [JsonPropertyName("brain")]
+        public int BrainSkillset { get; set; }
+
+        [JsonPropertyName("endurance")]
+        public int EnduranceSkillset { get; set; }
     }
 }

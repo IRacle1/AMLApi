@@ -1,15 +1,11 @@
-﻿using AMLApi.Core.Data;
+﻿
+using AMLApi.Core.Data;
 
 namespace AMLApi.Core.Objects
 {
     public abstract class Record : IEquatable<Record>
     {
         protected readonly RecordData recordData;
-
-        protected Record(Record record)
-            : this(record.recordData)
-        {
-        }
 
         protected Record(RecordData data)
         {
@@ -38,9 +34,6 @@ namespace AMLApi.Core.Objects
 
         public bool IsNotificationSent => recordData.IsNotificationSent;
 
-        public abstract Task<MaxMode> GetMaxMode();
-        public abstract Task<Player> GetPlayer();
-
         public bool Equals(Record? other)
         {
             if (other == null)
@@ -57,7 +50,7 @@ namespace AMLApi.Core.Objects
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(MaxModeId.GetHashCode(), PlayerGuid.GetHashCode());
+            return HashCode.Combine(MaxModeId, PlayerGuid);
         }
 
         public override string ToString()

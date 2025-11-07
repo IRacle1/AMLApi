@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AMLApi.Core.Objects.Cached.Interfaces
+using AMLApi.Core.Cached;
+
+namespace AMLApi.Core.Cached.Interfaces
 {
-    internal interface IRecordsCacheHolder
+    internal interface ICacheRecordsHolder
     {
         void AddRecord(CachedRecord record);
         void SetFetched();

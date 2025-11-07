@@ -10,23 +10,21 @@ using AMLApi.Core.Json;
 using AMLApi.Core.Objects;
 using AMLApi.Core.Enums;
 using System.Diagnostics.CodeAnalysis;
-using AMLApi.Core.Objects.Cached.Instances;
 using AMLApi.Core.Data;
-using AMLApi.Core.Objects.Cached.Interfaces;
-using AMLApi.Core.Objects.Rest;
+using AMLApi.Core.Cached.Interfaces;
 
-namespace AMLApi.Core.Objects.Cached
+namespace AMLApi.Core.Cached.Instances
 {
     internal class CachedAmlClient : CachedClient
     {
-        private RestClient restClient;
+        private BaseAmlClient baseClient;
 
         private Dictionary<int, CachedMaxMode> cachedMaxModes = new();
         private Dictionary<Guid, CachedPlayer> cachedPlayers = new();
 
-        internal CachedAmlClient(RestClient restClient)
+        internal CachedAmlClient(BaseAmlClient baseClient)
         {
-            this.restClient = restClient;
+            this.baseClient = baseClient;
         }
 
         public override IReadOnlyCollection<CachedMaxMode> MaxModes => cachedMaxModes.Values;
@@ -74,20 +72,17 @@ namespace AMLApi.Core.Objects.Cached
 
         public override async Task<(IReadOnlyCollection<CachedMaxMode>, IReadOnlyCollection<CachedPlayer>)> Search(string query)
         {
-            if (cachedPlayers.Count == 0)
-                await UpdatePlayersCache();
+            var result = await baseClient.Search(query);
 
-            (IReadOnlyCollection<MaxMode> restMaxModes, IReadOnlyCollection<ShortPlayerData> restPlayers) = await restClient.Search(query);
-
-            List<CachedMaxMode> maxModes = new(restMaxModes.Count);
-            foreach (var item in restMaxModes)
+            List<CachedMaxMode> maxModes = new(result.MaxModes.Length);
+            foreach (var item in result.MaxModes)
             {
                 if (cachedMaxModes.TryGetValue(item.Id, out CachedMaxMode? maxMode))
                     maxModes.Add(maxMode);
             }
 
-            List<CachedPlayer> players = new(restPlayers.Count);
-            foreach (var item in restPlayers)
+            List<CachedPlayer> players = new(result.Players.Length);
+            foreach (var item in result.Players)
             {
                 if (cachedPlayers.TryGetValue(item.Guid, out CachedPlayer? player))
                     players.Add(player);
@@ -101,10 +96,11 @@ namespace AMLApi.Core.Objects.Cached
             if (player.RecordsFetched)
                 return player.RecordsCache;
 
-            var restRecords = await restClient.FetchPlayerRecords(player);
-            List<CachedRecord> cachedRecords = new(restRecords.Count);
+            var restRecords = await baseClient.FetchPlayerRecords(player.Guid);
 
-            if (player is IRecordsCacheHolder playerCacheHolder)
+            List<CachedRecord> cachedRecords = new(restRecords.Length);
+
+            if (player is ICacheRecordsHolder playerCacheHolder)
             {
                 foreach (var restRecord in restRecords)
                 {
@@ -113,7 +109,7 @@ namespace AMLApi.Core.Objects.Cached
 
                     playerCacheHolder.AddRecord(record);
 
-                    if (record.MaxMode is IRecordsCacheHolder maxModeCacheHolder)
+                    if (record.MaxMode is ICacheRecordsHolder maxModeCacheHolder)
                         maxModeCacheHolder.AddRecord(record);
                 }
 
@@ -128,11 +124,11 @@ namespace AMLApi.Core.Objects.Cached
             if (maxMode.RecordsFetched)
                 return maxMode.RecordsCache;
 
-            var restRecords = await restClient.FetchMaxModeRecords(maxMode);
+            var restRecords = (await baseClient.FetchMaxMode(maxMode.Id)).Records;
 
-            List<CachedRecord> cachedRecords = new(restRecords.Count);
+            List<CachedRecord> cachedRecords = new(restRecords.Length);
 
-            if (maxMode is IRecordsCacheHolder maxModeCacheHolder)
+            if (maxMode is ICacheRecordsHolder maxModeCacheHolder)
             {
                 foreach (var restRecord in restRecords)
                 {
@@ -141,7 +137,7 @@ namespace AMLApi.Core.Objects.Cached
 
                     maxModeCacheHolder.AddRecord(record);
 
-                    if (record.Player is IRecordsCacheHolder playerCacheHolder)
+                    if (record.Player is ICacheRecordsHolder playerCacheHolder)
                         playerCacheHolder.AddRecord(record);
                 }
 
@@ -151,24 +147,24 @@ namespace AMLApi.Core.Objects.Cached
             return cachedRecords;
         }
 
-        private CachedPlayer CreatePlayer(Player player)
+        private CachedPlayer CreatePlayer(PlayerData player)
         {
             return new AmlCachedPlayer(this, player);
         }
 
-        private CachedMaxMode CreateMaxMode(MaxMode maxMode)
+        private CachedMaxMode CreateMaxMode(MaxModeData maxMode)
         {
             return new AmlCachedMaxMode(this, maxMode);
         }
 
-        private CachedRecord CreateRecord(Record record)
+        private CachedRecord CreateRecord(RecordData record)
         {
             return new AmlCachedRecord(this, record);
         }
 
         private async Task UpdateMaxModesCache()
         {
-            foreach (var item in await restClient.FetchMaxModes())
+            foreach (var item in await baseClient.FetchMaxModes())
             {
                 cachedMaxModes.Add(item.Id, CreateMaxMode(item));
             }
@@ -176,7 +172,7 @@ namespace AMLApi.Core.Objects.Cached
 
         private async Task UpdatePlayersCache()
         {
-            foreach (var item in await restClient.FetchPlayers())
+            foreach (var item in await baseClient.FetchPlayerLeaderboard(StatType.Skill))
             {
                 cachedPlayers.Add(item.Guid, CreatePlayer(item));
             }

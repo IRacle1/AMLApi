@@ -1,4 +1,6 @@
-﻿using AMLApi.Core.Data;
+﻿using System.Numerics;
+
+using AMLApi.Core.Data;
 using AMLApi.Core.Enums;
 
 namespace AMLApi.Core.Objects
@@ -6,11 +8,6 @@ namespace AMLApi.Core.Objects
     public abstract class MaxMode : IEquatable<MaxMode>
     {
         protected readonly MaxModeData maxModeData;
-
-        protected MaxMode(MaxMode maxMode)
-            : this(maxMode.maxModeData)
-        {
-        }
 
         protected MaxMode(MaxModeData data)
         {
@@ -35,8 +32,6 @@ namespace AMLApi.Core.Objects
         public bool IsExtra => maxModeData.IsExtra;
         public bool IsMaxModeOfTheMonth => maxModeData.IsMaxModeOfTheMonth;
 
-        public abstract Task<IReadOnlyCollection<Record>> GetRecords();
-
         public int GetPoints(PointType pointType)
         {
             int res = 0;
@@ -58,6 +53,34 @@ namespace AMLApi.Core.Objects
 
             return skillScale * maxModeData.SkillPoints + rngScale * maxModeData.RngPoints;
         }
+
+        public int GetSkillSetPercent(SkillsetType skillSetType)
+        {
+            int ret = 0;
+            if (skillSetType.HasFlag(SkillsetType.Aim))
+                ret += maxModeData.AimSkillset;
+            if (skillSetType.HasFlag(SkillsetType.Keyboard))
+                ret += maxModeData.KeyboardSkillset;
+            if (skillSetType.HasFlag(SkillsetType.Speed))
+                ret += maxModeData.SpeedSkillset;
+            if (skillSetType.HasFlag(SkillsetType.Brain))
+                ret += maxModeData.BrainSkillset;
+            if (skillSetType.HasFlag(SkillsetType.Greenrun))
+                ret += maxModeData.GreenrunSkillset;
+            if (skillSetType.HasFlag(SkillsetType.Endurance))
+                ret += maxModeData.EnduranceSkillset;
+
+            return ret;
+        }
+
+        public int this[SkillsetType skillSetType]
+        {
+            get
+            {
+                return GetSkillSetPercent(skillSetType);
+            }
+        }
+
 
         public bool Equals(MaxMode? other)
         {

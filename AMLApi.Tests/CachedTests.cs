@@ -1,25 +1,24 @@
-using AMLApi.Core;
+using AMLApi.Core.Cached;
 using AMLApi.Core.Enums;
 using AMLApi.Core.Objects;
-using AMLApi.Core.Objects.Cached;
 
 using Xunit.Abstractions;
 
 namespace AMLApi.Tests
 {
-    public class CoreTests : IClassFixture<AmlClientFixture>
+    public class CachedTests : IClassFixture<AmlClientFixture>
     {
         private readonly AmlClientFixture clientFixture;
         private readonly ITestOutputHelper output;
 
-        public CoreTests(AmlClientFixture clientFixture, ITestOutputHelper output)
+        public CachedTests(AmlClientFixture clientFixture, ITestOutputHelper output)
         {
             this.clientFixture = clientFixture;
             this.output = output;
         }
 
         [Fact]
-        public async Task CachedClient_GetMaxMode_ValidProperties()
+        public async Task MaxMode_ValidProperties()
         {
             CachedClient client = await clientFixture.GetCachedClient();
 
@@ -43,7 +42,7 @@ namespace AMLApi.Tests
         }
 
         [Fact]
-        public async Task CachedClient_GetMaxMode_ValidMaxModeFlags()
+        public async Task MaxMode_ValidMaxModeFlags()
         {
             CachedClient client = await clientFixture.GetCachedClient();
 
@@ -52,9 +51,16 @@ namespace AMLApi.Tests
 
             output.WriteLine("Max mode: {0}", maxMode);
 
+            output.WriteLine("SelfImposed(true): {0}", maxMode.IsSelfImposed);
             Assert.True(maxMode.IsSelfImposed);
+
+            output.WriteLine("Prepatch(true): {0}", maxMode.IsPrePatch);
             Assert.True(maxMode.IsPrePatch);
+
+            output.WriteLine("Extra(false): {0}", maxMode.IsExtra);
             Assert.False(maxMode.IsExtra);
+
+            output.WriteLine("IsMmotm(false): {0}", maxMode.IsMaxModeOfTheMonth);
             Assert.False(maxMode.IsMaxModeOfTheMonth);
         }
 
@@ -63,7 +69,7 @@ namespace AMLApi.Tests
         [InlineData(90)]
         [InlineData(50)]
         [InlineData(0)]
-        public async Task CachedClient_MaxModes_ValidFilter(int skillPersent)
+        public async Task MaxModes_ValidOrder(int skillPersent)
         {
             CachedClient client = await clientFixture.GetCachedClient();
 
@@ -89,24 +95,27 @@ namespace AMLApi.Tests
         [InlineData(StatType.Rng)]
         [InlineData(StatType.MaxModeBeaten)]
         [InlineData(StatType.Overall)]
-        public async Task RestClient_Players_ValidLeaderboard(StatType statType)
+        public async Task Players_ValidLeaderboardOrder(StatType statType)
         {
-            RestClient client = clientFixture.GetRestClient();
+            CachedClient client = await clientFixture.GetCachedClient();
 
-            var list = (await client.FetchPlayerLeaderboard(statType)).ToList();
+            var list = client.GetPlayerLeaderboard(statType).ToList();
 
-            double lastValue = list[0].GetStatValue(statType);
+            CachedPlayer lastPlayer = list[0];
 
-            output.WriteLine("stat value {0}, {1}: {2}", statType, list[0], lastValue);
+            output.WriteLine("Stat {0}", statType);
+            output.WriteLine("{0}: {1}", lastPlayer, lastPlayer.GetStatValue(statType));
 
             for (int i = 1; i < list.Count; i++)
             {
+                double lastValue = lastPlayer.GetStatValue(statType);
                 double newValue = list[i].GetStatValue(statType);
                 output.WriteLine("{0}: {1}", list[i], newValue);
 
                 Assert.False(lastValue < newValue);
+                Assert.False(lastPlayer.GetRankBy(statType) > list[i].GetRankBy(statType));
 
-                lastValue = newValue;
+                lastPlayer = list[i];
             }
         }
     }

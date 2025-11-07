@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 using AMLApi.Core.Data;
 using AMLApi.Core.Enums;
-using AMLApi.Core.Objects.Rest;
+using AMLApi.Core.Objects;
 
-namespace AMLApi.Core.Objects.Rest.Instances
+namespace AMLApi.Core.Rest.Instances
 {
-    internal class AmlRestPlayer : Player
+    internal class AmlRestPlayer : RestPlayer
     {
-        private RestClient client;
+        protected RestClient client;
 
         internal AmlRestPlayer(RestClient amlClient, PlayerData data)
             : base(data)
@@ -21,9 +21,9 @@ namespace AMLApi.Core.Objects.Rest.Instances
             client = amlClient;
         }
 
-        public override async Task<IReadOnlyCollection<Record>> GetRecords()
+        public override Task<IReadOnlyCollection<RestRecord>> FetchRecords()
         {
-            return await client.FetchPlayerRecords(this);
+            return client.FetchPlayerRecords(this);
         }
     }
 }

@@ -6,18 +6,20 @@ using System.Threading.Tasks;
 
 using AMLApi.Core.Data;
 using AMLApi.Core.Enums;
-using AMLApi.Core.Objects.Rest;
+using AMLApi.Core.Objects;
 
-namespace AMLApi.Core.Objects.Cached
+namespace AMLApi.Core.Cached
 {
-    public abstract class CachedPlayer : Player
+    public abstract class CachedMaxMode : MaxMode
     {
-        protected CachedPlayer(Player player) : 
-            base(player)
+        protected CachedMaxMode(MaxModeData data) :
+            base(data)
         {
         }
 
         public abstract IReadOnlyCollection<CachedRecord> RecordsCache { get; }
         public abstract bool RecordsFetched { get; }
+
+        public abstract Task<IReadOnlyCollection<CachedRecord>> GetRecords();
     }
 }
