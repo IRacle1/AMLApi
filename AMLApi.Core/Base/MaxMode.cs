@@ -1,9 +1,7 @@
-﻿using System.Numerics;
-
-using AMLApi.Core.Data;
+﻿using AMLApi.Core.Data;
 using AMLApi.Core.Enums;
 
-namespace AMLApi.Core.Objects
+namespace AMLApi.Core.Base
 {
     public abstract class MaxMode : IEquatable<MaxMode>
     {

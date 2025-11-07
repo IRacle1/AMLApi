@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Json;
-using System.Text;
+﻿using System.Net.Http.Json;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 using AMLApi.Core.Data;
 using AMLApi.Core.Enums;
 using AMLApi.Core.Json;
 
-namespace AMLApi.Core.Objects
+namespace AMLApi.Core.Base
 {
     internal class BaseAmlClient
     {

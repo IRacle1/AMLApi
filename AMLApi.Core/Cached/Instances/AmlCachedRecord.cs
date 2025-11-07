@@ -1,5 +1,4 @@
 ﻿using AMLApi.Core.Data;
-using AMLApi.Core.Objects;
 
 namespace AMLApi.Core.Cached.Instances
 {

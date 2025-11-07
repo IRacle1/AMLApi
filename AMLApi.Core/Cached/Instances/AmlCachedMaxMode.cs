@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AMLApi.Core.Enums;
+﻿using AMLApi.Core.Cached.Interfaces;
 using AMLApi.Core.Data;
-using AMLApi.Core.Objects;
-using AMLApi.Core.Cached.Interfaces;
 
 namespace AMLApi.Core.Cached.Instances
 {
@@ -17,7 +10,7 @@ namespace AMLApi.Core.Cached.Instances
 
         protected CachedClient client;
 
-        internal AmlCachedMaxMode(CachedClient amlClient, MaxModeData data) 
+        internal AmlCachedMaxMode(CachedClient amlClient, MaxModeData data)
             : base(data)
         {
             client = amlClient;

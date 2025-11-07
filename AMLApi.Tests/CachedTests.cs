@@ -1,6 +1,5 @@
 using AMLApi.Core.Cached;
 using AMLApi.Core.Enums;
-using AMLApi.Core.Objects;
 
 using Xunit.Abstractions;
 
@@ -73,7 +72,7 @@ namespace AMLApi.Tests
         {
             CachedClient client = await clientFixture.GetCachedClient();
 
-            var list = client.GetMaxModeListByRatio(skillPersent).ToList();
+            List<CachedMaxMode> list = client.GetMaxModeListByRatio(skillPersent).ToList();
 
             double lastValue = list[0].GetPointsByRatio(skillPersent);
 
@@ -99,7 +98,7 @@ namespace AMLApi.Tests
         {
             CachedClient client = await clientFixture.GetCachedClient();
 
-            var list = client.GetPlayerLeaderboard(statType).ToList();
+            List<CachedPlayer> list = client.GetPlayerLeaderboard(statType).ToList();
 
             CachedPlayer lastPlayer = list[0];
 

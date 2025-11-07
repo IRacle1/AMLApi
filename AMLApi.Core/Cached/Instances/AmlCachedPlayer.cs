@@ -1,14 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using AMLApi.Core.Cached.Interfaces;
+﻿using AMLApi.Core.Cached.Interfaces;
 using AMLApi.Core.Data;
-using AMLApi.Core.Enums;
-using AMLApi.Core.Objects;
 
 namespace AMLApi.Core.Cached.Instances
 {
@@ -18,7 +9,7 @@ namespace AMLApi.Core.Cached.Instances
         private bool recordsFetched;
         private readonly HashSet<CachedRecord> recordsCache = new();
 
-        internal AmlCachedPlayer(CachedClient amlClient, PlayerData data) 
+        internal AmlCachedPlayer(CachedClient amlClient, PlayerData data)
             : base(data)
         {
             client = amlClient;

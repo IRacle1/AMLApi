@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Json;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using System.Diagnostics.CodeAnalysis;
 
-using AMLApi.Core.Json;
-using AMLApi.Core.Objects;
-using AMLApi.Core.Enums;
-using System.Diagnostics.CodeAnalysis;
-using AMLApi.Core.Data;
 using AMLApi.Core.Cached.Interfaces;
+using AMLApi.Core.Data;
+using AMLApi.Core.Enums;
 
 namespace AMLApi.Core.Cached.Instances
 {
@@ -72,17 +63,17 @@ namespace AMLApi.Core.Cached.Instances
 
         public override async Task<(IReadOnlyCollection<CachedMaxMode>, IReadOnlyCollection<CachedPlayer>)> Search(string query)
         {
-            var result = await baseClient.Search(query);
+            SearchResult result = await baseClient.Search(query);
 
             List<CachedMaxMode> maxModes = new(result.MaxModes.Length);
-            foreach (var item in result.MaxModes)
+            foreach (MaxModeData item in result.MaxModes)
             {
                 if (cachedMaxModes.TryGetValue(item.Id, out CachedMaxMode? maxMode))
                     maxModes.Add(maxMode);
             }
 
             List<CachedPlayer> players = new(result.Players.Length);
-            foreach (var item in result.Players)
+            foreach (ShortPlayerData item in result.Players)
             {
                 if (cachedPlayers.TryGetValue(item.Guid, out CachedPlayer? player))
                     players.Add(player);
@@ -96,15 +87,15 @@ namespace AMLApi.Core.Cached.Instances
             if (player.RecordsFetched)
                 return player.RecordsCache;
 
-            var restRecords = await baseClient.FetchPlayerRecords(player.Guid);
+            RecordData[] restRecords = await baseClient.FetchPlayerRecords(player.Guid);
 
             List<CachedRecord> cachedRecords = new(restRecords.Length);
 
             if (player is ICacheRecordsHolder playerCacheHolder)
             {
-                foreach (var restRecord in restRecords)
+                foreach (RecordData restRecord in restRecords)
                 {
-                    var record = CreateRecord(restRecord);
+                    CachedRecord record = CreateRecord(restRecord);
                     cachedRecords.Add(record);
 
                     playerCacheHolder.AddRecord(record);
@@ -124,15 +115,15 @@ namespace AMLApi.Core.Cached.Instances
             if (maxMode.RecordsFetched)
                 return maxMode.RecordsCache;
 
-            var restRecords = (await baseClient.FetchMaxMode(maxMode.Id)).Records;
+            RecordData[] restRecords = (await baseClient.FetchMaxMode(maxMode.Id)).Records;
 
             List<CachedRecord> cachedRecords = new(restRecords.Length);
 
             if (maxMode is ICacheRecordsHolder maxModeCacheHolder)
             {
-                foreach (var restRecord in restRecords)
+                foreach (RecordData restRecord in restRecords)
                 {
-                    var record = CreateRecord(restRecord);
+                    CachedRecord record = CreateRecord(restRecord);
                     cachedRecords.Add(record);
 
                     maxModeCacheHolder.AddRecord(record);
@@ -164,7 +155,7 @@ namespace AMLApi.Core.Cached.Instances
 
         private async Task UpdateMaxModesCache()
         {
-            foreach (var item in await baseClient.FetchMaxModes())
+            foreach (MaxModeData item in await baseClient.FetchMaxModes())
             {
                 cachedMaxModes.Add(item.Id, CreateMaxMode(item));
             }
@@ -172,7 +163,7 @@ namespace AMLApi.Core.Cached.Instances
 
         private async Task UpdatePlayersCache()
         {
-            foreach (var item in await baseClient.FetchPlayerLeaderboard(StatType.Skill))
+            foreach (PlayerData item in await baseClient.FetchPlayerLeaderboard(StatType.Skill))
             {
                 cachedPlayers.Add(item.Guid, CreatePlayer(item));
             }

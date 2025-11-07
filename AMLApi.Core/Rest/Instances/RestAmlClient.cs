@@ -1,16 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Net.Http.Json;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-
-using AMLApi.Core.Data;
+﻿using AMLApi.Core.Data;
 using AMLApi.Core.Enums;
-using AMLApi.Core.Json;
-using AMLApi.Core.Objects;
 
 namespace AMLApi.Core.Rest.Instances
 {
@@ -30,7 +19,7 @@ namespace AMLApi.Core.Rest.Instances
 
         public override async Task<RestMaxMode> FetchMaxMode(int id)
         {
-            var fullData = await baseClient.FetchMaxMode(id);
+            FullMaxModeData fullData = await baseClient.FetchMaxMode(id);
             return CreateFullMaxMode(fullData);
         }
 
@@ -41,13 +30,13 @@ namespace AMLApi.Core.Rest.Instances
 
         public override async Task<IReadOnlyCollection<RestMaxMode>> FetchMaxModes()
         {
-            var result = await baseClient.FetchMaxModes();
+            MaxModeData[] result = await baseClient.FetchMaxModes();
             return Array.ConvertAll(result, CreateMaxMode);
         }
 
         public override async Task<IReadOnlyList<RestPlayer>> FetchPlayerLeaderboard(StatType statType)
         {
-            var result = await baseClient.FetchPlayerLeaderboard(statType);
+            PlayerData[] result = await baseClient.FetchPlayerLeaderboard(statType);
             return Array.ConvertAll(result, CreatePlayer);
         }
 
@@ -58,7 +47,7 @@ namespace AMLApi.Core.Rest.Instances
 
         public override async Task<IReadOnlyCollection<RestRecord>> FetchPlayerRecords(Guid guid)
         {
-            var result = await baseClient.FetchPlayerRecords(guid);
+            RecordData[] result = await baseClient.FetchPlayerRecords(guid);
             return Array.ConvertAll(result, CreateRecord);
         }
 
@@ -69,7 +58,7 @@ namespace AMLApi.Core.Rest.Instances
 
         public override async Task<IReadOnlyCollection<RestRecord>> FetchMaxModeRecords(int id)
         {
-            var result = await baseClient.FetchMaxMode(id);
+            FullMaxModeData result = await baseClient.FetchMaxMode(id);
             return Array.ConvertAll(result.Records, CreateRecord);
         }
 
@@ -80,7 +69,7 @@ namespace AMLApi.Core.Rest.Instances
 
         public override async Task<(IReadOnlyCollection<RestMaxMode>, IReadOnlyCollection<ShortPlayerData>)> Search(string query)
         {
-            var result = await baseClient.Search(query);
+            SearchResult result = await baseClient.Search(query);
 
             IReadOnlyCollection<RestMaxMode> maxModes = Array.ConvertAll(result.MaxModes, CreateMaxMode);
             return (maxModes, result!.Players);
@@ -98,7 +87,7 @@ namespace AMLApi.Core.Rest.Instances
 
         private RestMaxMode CreateFullMaxMode(FullMaxModeData data)
         {
-            var records = Array.ConvertAll(data.Records, CreateRecord);
+            RestRecord[] records = Array.ConvertAll(data.Records, CreateRecord);
             return new AmlRestMaxMode(this, data.Data, records);
         }
 

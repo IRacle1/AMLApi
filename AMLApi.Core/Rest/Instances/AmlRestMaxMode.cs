@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AMLApi.Core.Enums;
+﻿using System.Diagnostics.CodeAnalysis;
+
 using AMLApi.Core.Data;
-using AMLApi.Core.Objects;
-using System.Diagnostics.CodeAnalysis;
 
 namespace AMLApi.Core.Rest.Instances
 {
@@ -16,7 +10,7 @@ namespace AMLApi.Core.Rest.Instances
 
         protected RestClient client;
 
-        internal AmlRestMaxMode(RestClient amlClient, MaxModeData data) 
+        internal AmlRestMaxMode(RestClient amlClient, MaxModeData data)
             : base(data)
         {
             client = amlClient;

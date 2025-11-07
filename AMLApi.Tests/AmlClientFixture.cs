@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using AMLApi.Core.Cached;
+﻿using AMLApi.Core.Cached;
 using AMLApi.Core.Rest;
 
 namespace AMLApi.Tests

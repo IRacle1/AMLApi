@@ -1,6 +1,5 @@
 ﻿using AMLApi.Core.Data;
 using AMLApi.Core.Enums;
-using AMLApi.Core.Objects;
 using AMLApi.Core.Rest.Instances;
 
 namespace AMLApi.Core.Rest

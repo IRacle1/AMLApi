@@ -1,7 +1,6 @@
-﻿
-using AMLApi.Core.Data;
+﻿using AMLApi.Core.Data;
 
-namespace AMLApi.Core.Objects
+namespace AMLApi.Core.Base
 {
     public abstract class Record : IEquatable<Record>
     {
@@ -39,7 +38,7 @@ namespace AMLApi.Core.Objects
             if (other == null)
                 return false;
 
-            return MaxModeId == other.MaxModeId && 
+            return MaxModeId == other.MaxModeId &&
                 PlayerGuid == other.PlayerGuid;
         }
 

@@ -1,7 +1,4 @@
-using System;
-
 using AMLApi.Core.Enums;
-using AMLApi.Core.Objects;
 using AMLApi.Core.Rest;
 
 using Xunit.Abstractions;
@@ -76,7 +73,7 @@ namespace AMLApi.Tests
         {
             RestClient client = clientFixture.GetRestClient();
 
-            var list = await client.FetchPlayerLeaderboard(statType);
+            IReadOnlyList<RestPlayer> list = await client.FetchPlayerLeaderboard(statType);
 
             RestPlayer lastPlayer = list[0];
 
@@ -102,9 +99,9 @@ namespace AMLApi.Tests
         {
             RestClient client = clientFixture.GetRestClient();
 
-            var list = await client.FetchPlayers();
+            IReadOnlyCollection<RestPlayer> list = await client.FetchPlayers();
 
-            foreach (var player in list)
+            foreach (RestPlayer player in list)
             {
                 output.WriteLine("Player: {0}", player);
                 Assert.NotNull(player.Name);
@@ -120,11 +117,11 @@ namespace AMLApi.Tests
             RestClient client = clientFixture.GetRestClient();
 
             Guid guid = Guid.Parse(rawGuid);
-            var player = await client.FetchPlayer(guid);
+            RestPlayer player = await client.FetchPlayer(guid);
 
             output.WriteLine("Player: {0}", player);
 
-            var records = await player.FetchRecords();
+            IReadOnlyCollection<RestRecord> records = await player.FetchRecords();
 
             foreach (RestRecord record in records)
             {
