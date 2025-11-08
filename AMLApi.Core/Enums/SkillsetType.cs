@@ -1,7 +1,7 @@
 ﻿namespace AMLApi.Core.Enums
 {
     [Flags]
-    public enum SkillsetType
+    public enum SkillSetType
     {
         None = 0,
         Aim = 1 << 1,

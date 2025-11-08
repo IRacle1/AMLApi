@@ -135,7 +135,7 @@ namespace AMLApi.Tests
 
             Assert.NotNull(player);
 
-            IReadOnlyCollection<CachedRecord> records = await player.GetRecords();
+            IReadOnlyCollection<CachedRecord> records = await player.GetOrFetchRecords();
 
             foreach (CachedRecord record in records)
             {
@@ -165,7 +165,7 @@ namespace AMLApi.Tests
 
             Assert.NotNull(maxMode);
 
-            var records = await maxMode.GetRecords();
+            var records = await maxMode.GetOrFetchRecords();
 
             Assert.NotNull(records);
 

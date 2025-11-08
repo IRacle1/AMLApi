@@ -52,33 +52,21 @@ namespace AMLApi.Core.Base
             return skillScale * maxModeData.SkillPoints + rngScale * maxModeData.RngPoints;
         }
 
-        public int GetSkillSetPercent(SkillsetType skillSetType)
+        public int GetSkillSetPercent(SkillSetType skillSetType)
         {
             int ret = 0;
-            if (skillSetType.HasFlag(SkillsetType.Aim))
-                ret += maxModeData.AimSkillset;
-            if (skillSetType.HasFlag(SkillsetType.Keyboard))
-                ret += maxModeData.KeyboardSkillset;
-            if (skillSetType.HasFlag(SkillsetType.Speed))
-                ret += maxModeData.SpeedSkillset;
-            if (skillSetType.HasFlag(SkillsetType.Brain))
-                ret += maxModeData.BrainSkillset;
-            if (skillSetType.HasFlag(SkillsetType.Greenrun))
-                ret += maxModeData.GreenrunSkillset;
-            if (skillSetType.HasFlag(SkillsetType.Endurance))
-                ret += maxModeData.EnduranceSkillset;
+
+            foreach (SkillSetType check in Enum.GetValues<SkillSetType>())
+            {
+                if (check is SkillSetType.None or SkillSetType.All)
+                    continue;
+
+                if (skillSetType.HasFlag(check))
+                    ret += maxModeData.GetSkillSetValue(check);
+            }
 
             return ret;
         }
-
-        public int this[SkillsetType skillSetType]
-        {
-            get
-            {
-                return GetSkillSetPercent(skillSetType);
-            }
-        }
-
 
         public bool Equals(MaxMode? other)
         {

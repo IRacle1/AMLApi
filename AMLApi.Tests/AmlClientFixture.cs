@@ -1,4 +1,5 @@
-﻿using AMLApi.Core.Cached;
+﻿using AMLApi.Core.Base;
+using AMLApi.Core.Cached;
 using AMLApi.Core.Rest;
 
 namespace AMLApi.Tests
@@ -7,6 +8,7 @@ namespace AMLApi.Tests
     {
         private CachedClient? cachedClient;
         private RestClient? restClient;
+        private BaseAmlClient? baseClient;
 
         public async Task<CachedClient> GetCachedClient()
         {
@@ -16,6 +18,11 @@ namespace AMLApi.Tests
         public RestClient GetRestClient()
         {
             return restClient ??= RestClient.CreateClient();
+        }
+
+        public BaseAmlClient GetBaseClient()
+        {
+            return baseClient ??= BaseAmlClient.CreateClient();
         }
     }
 }

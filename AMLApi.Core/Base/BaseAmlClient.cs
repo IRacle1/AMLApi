@@ -7,7 +7,7 @@ using AMLApi.Core.Json;
 
 namespace AMLApi.Core.Base
 {
-    internal class BaseAmlClient
+    public class BaseAmlClient
     {
         private HttpClient httpClient;
         private static JsonSerializerOptions options = new();

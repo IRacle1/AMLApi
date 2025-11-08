@@ -30,7 +30,7 @@ namespace AMLApi.Core.Cached.Instances
             recordsFetched = true;
         }
 
-        public override Task<IReadOnlyCollection<CachedRecord>> GetRecords()
+        public override Task<IReadOnlyCollection<CachedRecord>> GetOrFetchRecords()
         {
             return client.GetOrFetchMaxModeRecords(this);
         }
