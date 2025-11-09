@@ -50,16 +50,16 @@ namespace AMLApi.Core.Data
         public int? TotalRank { get; set; }
 
         [JsonPropertyName("skillMaxPt")]
-        public int SkillMaxPoints { get; set; }
+        public int? SkillMaxPoints { get; set; }
 
         [JsonPropertyName("rngMaxPt")]
-        public int RngMaxPoints { get; set; }
+        public int? RngMaxPoints { get; set; }
 
         [JsonPropertyName("modesBeaten")]
         public int ModesBeaten { get; set; }
 
         [JsonPropertyName("modesbeatenrank")]
-        public int ModesBeatenRank { get; set; }
+        public int? ModesBeatenRank { get; set; }
 
         [JsonPropertyName("continent")]
         public string? Continent { get; set; }

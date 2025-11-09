@@ -6,6 +6,9 @@ using AMLApi.Core.Enums;
 
 namespace AMLApi.Core
 {
+    /// <summary>
+    /// General extensions class.
+    /// </summary>
     public static class Extensions
     {
         private static readonly Dictionary<SkillSetType, Func<MaxModeData, int>> skillSetFunctions = new();
@@ -27,6 +30,11 @@ namespace AMLApi.Core
             }
         }
 
+        /// <summary>
+        /// Returns route part for requesting player leaderboard.
+        /// </summary>
+        /// <param name="stat">Target stat to get leaderboard.</param>
+        /// <returns>Route part for requesting player leaderboard.</returns>
         public static string ToRoute(this StatType stat) => stat switch
         {
             StatType.Skill => "skill",
@@ -36,6 +44,11 @@ namespace AMLApi.Core
             _ => "",
         };
 
+        /// <summary>
+        /// Returns <see cref="Continent"/> enum from raw string from request.
+        /// </summary>
+        /// <param name="raw">Raw string from request</param>
+        /// <returns><see cref="Continent"/> enum corresponded input string.</returns>
         public static Continent ContinentFromString(this string? raw) => (raw ?? string.Empty).ToLowerInvariant() switch
         {
             "europe" => Continent.Europe,
@@ -47,6 +60,12 @@ namespace AMLApi.Core
             _ => Continent.None,
         };
 
+        /// <summary>
+        /// Gets skillset value from <see cref="MaxModeData"/>, by <see cref="SkillSetType"/>.
+        /// </summary>
+        /// <param name="maxModeData">Target <see cref="MaxModeData"/>.</param>
+        /// <param name="type">Target <see cref="SkillSetType"/>.</param>
+        /// <returns>Skillset value.</returns>
         public static int GetSkillSetValue(this MaxModeData maxModeData, SkillSetType type)
         {
             int value = (int)type;

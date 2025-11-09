@@ -10,8 +10,6 @@ using AMLApi.Core.Cached;
 using AMLApi.Core.Data;
 using AMLApi.Core.Enums;
 
-using Microsoft.VisualStudio.TestPlatform.Utilities;
-
 using Xunit.Abstractions;
 
 namespace AMLApi.Tests

@@ -6,9 +6,9 @@ namespace AMLApi.Core.Rest.Instances
 {
     internal class RestAmlClient : RestClient
     {
-        private readonly BaseAmlClient baseClient;
+        private readonly RawAmlClient baseClient;
 
-        internal RestAmlClient(BaseAmlClient baseClient)
+        internal RestAmlClient(RawAmlClient baseClient)
         {
             this.baseClient = baseClient;
         }
@@ -43,7 +43,7 @@ namespace AMLApi.Core.Rest.Instances
 
         public override async Task<IEnumerable<RestMaxMode>> FetchMaxModeListByRatio(int skillPersent)
         {
-            return (await FetchMaxModes()).OrderByDescending(m => m.GetPointsByRatio(skillPersent));
+            return (await FetchMaxModes()).OrderDescending(new MaxModeRatioComparer<RestMaxMode>(skillPersent));
         }
 
         public override async Task<IReadOnlyCollection<RestRecord>> FetchPlayerRecords(Guid guid)

@@ -66,23 +66,25 @@ namespace AMLApi.Core.Base
         {
             int res = 0;
             if (pointType.HasFlag(PointType.Rng))
-                res += playerData.RngMaxPoints;
+                res += playerData.RngMaxPoints ?? 0;
             if (pointType.HasFlag(PointType.Skill))
-                res += playerData.SkillMaxPoints;
+                res += playerData.SkillMaxPoints ?? 0;
 
             return res;
         }
 
-        public int? GetRankBy(StatType statType)
+        public int GetRankBy(StatType statType)
         {
-            return statType switch
+            int? targetVal = statType switch
             {
                 StatType.Skill => playerData.SkillRank,
                 StatType.Rng => playerData.RngRank,
                 StatType.Overall => playerData.TotalRank,
                 StatType.MaxModeBeaten => playerData.ModesBeatenRank,
-                _ => -1,
+                _ => int.MaxValue,
             };
+
+            return targetVal.GetValueOrDefault(int.MaxValue);
         }
 
         public bool Equals(Player? other)

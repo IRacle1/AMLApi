@@ -91,4 +91,50 @@ namespace AMLApi.Core.Base
             return Name;
         }
     }
+
+    public class MaxModeRatioComparer<T> : IComparer<T>
+        where T : MaxMode
+    {
+        private readonly int skillRatio;
+
+        public MaxModeRatioComparer(int skillRatio)
+        {
+            this.skillRatio = skillRatio;
+        }
+
+        public int Compare(T? x, T? y)
+        {
+            if (x == null)
+            {
+                if (y == null)
+                {
+                    return 0;
+                }
+                return -1;
+            }
+
+            if (y == null)
+            {
+                return 1;
+            }
+
+            double xPoints = x.GetPointsByRatio(skillRatio);
+            double yPoints = y.GetPointsByRatio(skillRatio);
+
+            if (xPoints == yPoints)
+            {
+                // x > y
+                // x harder y
+                // top x less than top y
+                // yTop - xTop
+                return y.Top - x.Top;
+            }
+
+            // x > y
+            // x harder y
+            // x have more points than y
+            // xPnts - yPnts > 0
+            return double.Sign(xPoints - yPoints);
+        }
+    }
 }

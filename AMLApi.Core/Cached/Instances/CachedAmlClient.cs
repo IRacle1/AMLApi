@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 using AMLApi.Core.Base;
 using AMLApi.Core.Cached.Interfaces;
@@ -9,12 +10,12 @@ namespace AMLApi.Core.Cached.Instances
 {
     internal class CachedAmlClient : CachedClient
     {
-        private BaseAmlClient baseClient;
+        private RawAmlClient baseClient;
 
         private Dictionary<int, CachedMaxMode> cachedMaxModes = new();
         private Dictionary<Guid, CachedPlayer> cachedPlayers = new();
 
-        internal CachedAmlClient(BaseAmlClient baseClient)
+        internal CachedAmlClient(RawAmlClient baseClient)
         {
             this.baseClient = baseClient;
         }
@@ -59,7 +60,7 @@ namespace AMLApi.Core.Cached.Instances
 
         public override IEnumerable<CachedMaxMode> GetMaxModeListByRatio(int skillPersent)
         {
-            return cachedMaxModes.Values.OrderByDescending(m => m.GetPointsByRatio(skillPersent));
+            return cachedMaxModes.Values.OrderDescending(new MaxModeRatioComparer<CachedMaxMode>(skillPersent));
         }
 
         public override async Task<(IReadOnlyCollection<CachedMaxMode>, IReadOnlyCollection<CachedPlayer>)> Search(string query)
@@ -111,6 +112,13 @@ namespace AMLApi.Core.Cached.Instances
             return cachedRecords;
         }
 
+
+        public override Task<IReadOnlyCollection<CachedRecord>> GetOrFetchPlayerRecords(Guid guid)
+        {
+            CachedPlayer player = GetPlayer(guid)!;
+            return GetOrFetchPlayerRecords(player);
+        }
+
         public override async Task<IReadOnlyCollection<CachedRecord>> GetOrFetchMaxModeRecords(CachedMaxMode maxMode)
         {
             if (maxMode.RecordsFetched)
@@ -139,6 +147,12 @@ namespace AMLApi.Core.Cached.Instances
             return cachedRecords;
         }
 
+        public override Task<IReadOnlyCollection<CachedRecord>> GetOrFetchMaxModeRecords(int id)
+        {
+            CachedMaxMode maxMode = GetMaxMode(id)!;
+            return GetOrFetchMaxModeRecords(maxMode);
+        }
+
         private CachedPlayer CreatePlayer(PlayerData player)
         {
             return new AmlCachedPlayer(this, player);
@@ -164,7 +178,7 @@ namespace AMLApi.Core.Cached.Instances
 
         private async Task UpdatePlayersCache()
         {
-            foreach (PlayerData item in await baseClient.FetchPlayerLeaderboard(StatType.Skill))
+            foreach (PlayerData item in await baseClient.FetchPlayerLeaderboard(StatType.MaxModeBeaten))
             {
                 cachedPlayers.Add(item.Guid, CreatePlayer(item));
             }

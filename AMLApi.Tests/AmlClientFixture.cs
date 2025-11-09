@@ -8,7 +8,7 @@ namespace AMLApi.Tests
     {
         private CachedClient? cachedClient;
         private RestClient? restClient;
-        private BaseAmlClient? baseClient;
+        private RawAmlClient? baseClient;
 
         public async Task<CachedClient> GetCachedClient()
         {
@@ -20,9 +20,9 @@ namespace AMLApi.Tests
             return restClient ??= RestClient.CreateClient();
         }
 
-        public BaseAmlClient GetBaseClient()
+        public RawAmlClient GetBaseClient()
         {
-            return baseClient ??= BaseAmlClient.CreateClient();
+            return baseClient ??= RawAmlClient.CreateClient();
         }
     }
 }
