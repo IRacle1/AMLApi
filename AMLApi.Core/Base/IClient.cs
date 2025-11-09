@@ -6,10 +6,17 @@ using System.Threading.Tasks;
 
 using AMLApi.Core.Data;
 using AMLApi.Core.Enums;
-using AMLApi.Core.Rest;
 
 namespace AMLApi.Core.Base
 {
+    /// <summary>
+    /// Abstract interface for clients.
+    /// </summary>
+    /// <remarks>
+    /// <seealso cref="Cached.CachedClient"/>
+    /// <seealso cref="RawAmlClient"/>
+    /// <seealso cref="Rest.RestClient"/>
+    /// </remarks>
     public interface IClient
     {
         Task<Player> FetchPlayer(Guid guid);

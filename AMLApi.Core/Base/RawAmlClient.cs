@@ -10,8 +10,10 @@ namespace AMLApi.Core.Base
     /// <summary>
     /// Base AML client that does 0% logic, and just fetches data
     /// </summary>
+    /// <remarks></remarks>
     /// <seealso cref="Cached.CachedClient"/>
     /// <seealso cref="Rest.RestClient"/>
+    /// </remarks>
     public class RawAmlClient
     {
         private HttpClient httpClient;

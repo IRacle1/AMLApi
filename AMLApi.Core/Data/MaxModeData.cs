@@ -8,22 +8,22 @@ namespace AMLApi.Core.Data
         public int Id { get; set; }
 
         [JsonPropertyName("name")]
-        public string Name { get; set; } = string.Empty;
+        public string Name { get; set; } = null!;
 
         [JsonPropertyName("creator")]
-        public string Creator { get; set; } = string.Empty;
+        public string Creator { get; set; } = null!;
 
         [JsonPropertyName("mmlength")]
-        public string Length { get; set; } = string.Empty;
+        public string Length { get; set; } = null!;
 
         [JsonPropertyName("videoID")]
-        public string? VideoId { get; set; }
+        public string VideoId { get; set; } = null!;
 
         [JsonPropertyName("game")]
-        public string GameName { get; set; } = string.Empty;
+        public string GameName { get; set; } = null!;
 
         [JsonPropertyName("link")]
-        public string GameUrl { get; set; } = string.Empty;
+        public string GameUrl { get; set; } = null!;
 
         [JsonPropertyName("skillValue")]
         public int SkillPoints { get; set; }

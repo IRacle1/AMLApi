@@ -74,6 +74,28 @@ namespace AMLApi.Tests
         }
 
         [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public async Task MaxModes_ValidProperties(bool cachedClient)
+        {
+            IClient client = cachedClient ? await clientFixture.GetCachedClient() : clientFixture.GetRestClient();
+
+            IReadOnlyCollection<MaxMode> list = await client.FetchMaxModes();
+
+            foreach (var maxMode in list)
+            {
+                output.WriteLine("Max mode {0}", maxMode);
+                Assert.NotNull(maxMode.Name);
+                Assert.NotNull(maxMode.GameName);
+                Assert.NotNull(maxMode.GameUrl);
+                Assert.NotNull(maxMode.Creator);
+                Assert.NotNull(maxMode.GameName);
+                Assert.NotNull(maxMode.VerificationVideoUrl);
+
+            }
+        }
+
+        [Theory]
         [InlineData(true, 100)]
         [InlineData(true, 90)]
         [InlineData(true, 50)]
@@ -153,7 +175,7 @@ namespace AMLApi.Tests
             foreach (Player player in list)
             {
                 output.WriteLine("Player: {0}", player);
-                Assert.NotNull(player.Name);
+                Assert.NotNull(player.Nickname);
             }
         }
 

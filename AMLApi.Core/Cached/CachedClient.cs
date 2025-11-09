@@ -9,8 +9,20 @@ using AMLApi.Core.Enums;
 
 namespace AMLApi.Core.Cached
 {
+    /// <summary>
+    /// Abstract interface for cached 
+    /// </summary>
+    /// <remarks>
+    /// <seealso cref="Base.IClient"/>
+    /// <seealso cref="RawAmlClient"/>
+    /// <seealso cref="Rest.RestClient"/>
+    /// </remarks>
     public abstract class CachedClient : IClient
     {
+        /// <summary>
+        /// Creates new instance of <see cref="CachedClient"/>.
+        /// </summary>
+        /// <returns>New instance of <see cref="CachedClient"/>.</returns>
         public static async Task<CachedClient> CreateClient()
         {
             RawAmlClient baseClient = RawAmlClient.CreateClient();
@@ -94,7 +106,7 @@ namespace AMLApi.Core.Cached
         {
             var result = await Search(query);
             var maxModes = result.Item1;
-            var players = result.Item2.Select(p => new ShortPlayerData { Guid = p.Guid, Name = p.Name }).ToList();
+            var players = result.Item2.Select(p => new ShortPlayerData { Guid = p.Guid, Name = p.Nickname }).ToList();
             return (maxModes, players);
         }
     }
