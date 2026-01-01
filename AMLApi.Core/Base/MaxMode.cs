@@ -155,6 +155,11 @@ namespace AMLApi.Core.Base
             return ret;
         }
 
+        public MaxModeData ToData()
+        {
+            return maxModeData;
+        }
+
         /// <inheritdoc/>
         public bool Equals(MaxMode? other)
         {

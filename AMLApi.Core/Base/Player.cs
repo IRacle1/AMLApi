@@ -191,6 +191,11 @@ namespace AMLApi.Core.Base
             return targetVal.GetValueOrDefault(int.MaxValue);
         }
 
+        public PlayerData ToData() 
+        {
+            return playerData;
+        }
+
         /// <inheritdoc/>
         public bool Equals(Player? other)
         {

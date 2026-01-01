@@ -2,25 +2,16 @@
 
 namespace AMLApi.Core.Data
 {
-    public class MaxModeData
+    public class MaxModeData : ShortMaxModeData
     {
         [JsonPropertyName("id")]
         public int Id { get; set; }
-
-        [JsonPropertyName("name")]
-        public string Name { get; set; } = null!;
 
         [JsonPropertyName("creator")]
         public string Creator { get; set; } = null!;
 
         [JsonPropertyName("mmlength")]
         public string Length { get; set; } = null!;
-
-        [JsonPropertyName("videoID")]
-        public string VideoId { get; set; } = null!;
-
-        [JsonPropertyName("game")]
-        public string GameName { get; set; } = null!;
 
         [JsonPropertyName("link")]
         public string GameUrl { get; set; } = null!;
@@ -30,9 +21,6 @@ namespace AMLApi.Core.Data
 
         [JsonPropertyName("rngValue")]
         public int RngPoints { get; set; }
-
-        [JsonPropertyName("top")]
-        public int Top { get; set; }
 
         [JsonPropertyName("selfimposed")]
         public bool IsSelfImposed { get; set; }

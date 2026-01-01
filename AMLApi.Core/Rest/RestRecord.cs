@@ -12,5 +12,8 @@ namespace AMLApi.Core.Rest
 
         public abstract Task<RestMaxMode> FetchMaxMode();
         public abstract Task<RestPlayer> FetchPlayer();
+
+        public abstract PlayerData? PlayerData { get; }
+        public abstract ShortMaxModeData? MaxModeData { get; }
     }
 }
