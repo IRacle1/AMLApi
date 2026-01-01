@@ -1,7 +1,5 @@
 using AMLApi.Core.Base;
-using AMLApi.Core.Cached;
 using AMLApi.Core.Enums;
-using AMLApi.Core.Rest;
 
 using Xunit.Abstractions;
 
@@ -20,12 +18,10 @@ namespace AMLApi.Tests
             this.output = output;
         }
 
-        [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
-        public async Task MaxMode_ValidProperties(bool cachedClient)
+        [Fact]
+        public async Task MaxMode_ValidProperties()
         {
-            IClient client = cachedClient ? await clientFixture.GetCachedClient() : clientFixture.GetRestClient();
+            IClient client = clientFixture.GetRestClient();
 
             // ultimatum
             MaxMode maxMode = await client.FetchMaxMode(9);
@@ -46,12 +42,10 @@ namespace AMLApi.Tests
             Assert.False(maxMode.IsMaxModeOfTheMonth);
         }
 
-        [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
-        public async Task MaxMode_ValidMaxModeFlags(bool cachedClient)
+        [Fact]
+        public async Task MaxMode_ValidMaxModeFlags()
         {
-            IClient client = cachedClient ? await clientFixture.GetCachedClient() : clientFixture.GetRestClient();
+            IClient client = clientFixture.GetRestClient();
 
             // hp npg rv
             MaxMode maxMode = await client.FetchMaxMode(425);
@@ -73,12 +67,10 @@ namespace AMLApi.Tests
             Assert.False(maxMode.IsMaxModeOfTheMonth);
         }
 
-        [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
-        public async Task MaxModes_ValidProperties(bool cachedClient)
+        [Fact]
+        public async Task MaxModes_ValidProperties()
         {
-            IClient client = cachedClient ? await clientFixture.GetCachedClient() : clientFixture.GetRestClient();
+            IClient client = clientFixture.GetRestClient();
 
             IReadOnlyCollection<MaxMode> list = await client.FetchMaxModes();
 
@@ -96,17 +88,13 @@ namespace AMLApi.Tests
         }
 
         [Theory]
-        [InlineData(true, 100)]
-        [InlineData(true, 90)]
-        [InlineData(true, 50)]
-        [InlineData(true, 0)]
-        [InlineData(false, 100)]
-        [InlineData(false, 90)]
-        [InlineData(false, 50)]
-        [InlineData(false, 0)]
-        public async Task MaxModes_ValidOrder(bool cachedClient, int skillPersent)
+        [InlineData(100)]
+        [InlineData(90)]
+        [InlineData(50)]
+        [InlineData(0)]
+        public async Task MaxModes_ValidOrder(int skillPersent)
         {
-            IClient client = cachedClient ? await clientFixture.GetCachedClient() : clientFixture.GetRestClient();
+            IClient client = clientFixture.GetRestClient();
 
             List<MaxMode> list = (await client.FetchMaxModeListByRatio(skillPersent)).ToList();
 
@@ -126,19 +114,15 @@ namespace AMLApi.Tests
         }
 
         [Theory]
-        [InlineData(true, StatType.Skill)]
-        [InlineData(true, StatType.Rng)]
-        [InlineData(true, StatType.MaxModeBeaten)]
-        [InlineData(true, StatType.Overall)]
-        [InlineData(false, StatType.Skill)]
-        [InlineData(false, StatType.Rng)]
-        [InlineData(false, StatType.MaxModeBeaten)]
-        [InlineData(false, StatType.Overall)]
-        public async Task Players_ValidLeaderboardOrder(bool cachedClient, StatType statType)
+        [InlineData(StatType.Skill)]
+        [InlineData(StatType.Rng)]
+        [InlineData(StatType.MaxModeBeaten)]
+        [InlineData(StatType.Overall)]
+        public async Task Players_ValidLeaderboardOrder(StatType statType)
         {
-            IClient client = cachedClient ? await clientFixture.GetCachedClient() : clientFixture.GetRestClient();
+            IClient client = clientFixture.GetRestClient();
 
-            IReadOnlyList<Player> list = (await client.FetchPlayerLeaderboard(statType)).ToList();
+            List<Player> list = (await client.FetchPlayerLeaderboard(statType, 1)).ToList();
 
             Player lastPlayer = list[0];
 
@@ -163,14 +147,12 @@ namespace AMLApi.Tests
         }
 
         // hell nah
-        [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
-        public async Task Players_ValidPlayerList(bool cachedClient)
+        [Fact]
+        public async Task Players_ValidPlayerList()
         {
-            IClient client = cachedClient ? await clientFixture.GetCachedClient() : clientFixture.GetRestClient();
+            IClient client = clientFixture.GetRestClient();
 
-            IReadOnlyCollection<Player> list = await client.FetchPlayers();
+            IReadOnlyCollection<Player> list = (await client.FetchPlayerLeaderboard(StatType.Skill, 1)).ToList();
 
             foreach (Player player in list)
             {
@@ -180,15 +162,12 @@ namespace AMLApi.Tests
         }
 
         [Theory]
-        [InlineData(true, "1f30ece4-bfd2-40e7-8b52-855ab7cffde3")] // serd
-        [InlineData(true, "0bfc57bc-7c6f-4bb9-9a1e-de189dde38b5")] // ultament
-        [InlineData(true, "1d5fcf64-5686-45e8-b0b8-1402d2cdef44")] // meee :3
-        [InlineData(false, "1f30ece4-bfd2-40e7-8b52-855ab7cffde3")] // serd
-        [InlineData(false, "0bfc57bc-7c6f-4bb9-9a1e-de189dde38b5")] // ultament
-        [InlineData(false, "1d5fcf64-5686-45e8-b0b8-1402d2cdef44")] // meee :3
-        public async Task Records_ValidPlayerRecords(bool cachedClient, string rawGuid)
+        [InlineData("1f30ece4-bfd2-40e7-8b52-855ab7cffde3")] // serd
+        [InlineData("0bfc57bc-7c6f-4bb9-9a1e-de189dde38b5")] // ultament
+        [InlineData("1d5fcf64-5686-45e8-b0b8-1402d2cdef44")] // meee :3
+        public async Task Records_ValidPlayerRecords(string rawGuid)
         {
-            IClient client = cachedClient ? await clientFixture.GetCachedClient() : clientFixture.GetRestClient();
+            IClient client = clientFixture.GetRestClient();
 
             Guid guid = Guid.Parse(rawGuid);
             Player player = await client.FetchPlayer(guid);
@@ -208,13 +187,11 @@ namespace AMLApi.Tests
         }
 
         [Theory]
-        [InlineData(true, 89)] // ems
-        [InlineData(true, 171)] // 50/20 ndc vanilla
-        [InlineData(false, 89)] // ems
-        [InlineData(false, 171)] // 50/20 ndc vanilla
-        public async Task Records_ValidMaxModeRecords(bool cachedClient, int id)
+        [InlineData(89)] // esm
+        [InlineData(171)] // 50/20 ndc vanilla
+        public async Task Records_ValidMaxModeRecords(int id)
         {
-            IClient client = cachedClient ? await clientFixture.GetCachedClient() : clientFixture.GetRestClient();
+            IClient client = clientFixture.GetRestClient();
 
             MaxMode maxMode = await client.FetchMaxMode(id);
 

@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 using AMLApi.Core;
 using AMLApi.Core.Base;
-using AMLApi.Core.Cached;
 using AMLApi.Core.Data;
 using AMLApi.Core.Enums;
 
@@ -44,6 +43,7 @@ namespace AMLApi.Tests
             Assert.Equal(8, data.GetSkillSetValue(SkillSetType.Speed));
             Assert.Equal(16, data.GetSkillSetValue(SkillSetType.Endurance));
             Assert.Equal(32, data.GetSkillSetValue(SkillSetType.Keyboard));
+            Assert.Equal(48, data.GetSkillSetValue(SkillSetType.Keyboard | SkillSetType.Endurance));
         }
     }
 }

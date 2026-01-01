@@ -91,6 +91,11 @@ namespace AMLApi.Core.Base
         public bool IsMaxModeOfTheMonth => maxModeData.IsMaxModeOfTheMonth;
 
         /// <summary>
+        /// Gets a maxmode description.
+        /// </summary>
+        public string? Description => maxModeData.Description;
+
+        /// <summary>
         /// Gets a maxmode points value by <see cref="PointType"/> argument.
         /// </summary>
         /// <param name="pointType"><see cref="PointType"/> needed to calculate.</param>

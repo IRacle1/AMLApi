@@ -24,26 +24,21 @@ namespace AMLApi.Core.Rest.Instances
             return CreateFullMaxMode(fullData);
         }
 
-        public override async Task<IReadOnlyCollection<RestPlayer>> FetchPlayers()
-        {
-            return await FetchPlayerLeaderboard(StatType.Skill);
-        }
-
         public override async Task<IReadOnlyCollection<RestMaxMode>> FetchMaxModes()
         {
             MaxModeData[] result = await baseClient.FetchMaxModes();
             return Array.ConvertAll(result, CreateMaxMode);
         }
 
-        public override async Task<IReadOnlyList<RestPlayer>> FetchPlayerLeaderboard(StatType statType)
+        public override async Task<IReadOnlyList<RestPlayer>> FetchPlayerLeaderboard(StatType statType, int page)
         {
-            PlayerData[] result = await baseClient.FetchPlayerLeaderboard(statType);
+            PlayerData[] result = await baseClient.FetchPlayerLeaderboard(statType, page);
             return Array.ConvertAll(result, CreatePlayer);
         }
 
         public override async Task<IEnumerable<RestMaxMode>> FetchMaxModeListByRatio(int skillPersent)
         {
-            return (await FetchMaxModes()).OrderDescending(new MaxModeRatioComparer<RestMaxMode>(skillPersent));
+            return (await FetchMaxModes()).OrderDescending(MaxModeRatioComparer<RestMaxMode>.CreateNew(skillPersent));
         }
 
         public override async Task<IReadOnlyCollection<RestRecord>> FetchPlayerRecords(Guid guid)

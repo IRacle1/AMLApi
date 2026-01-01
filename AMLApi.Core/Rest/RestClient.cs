@@ -17,8 +17,7 @@ namespace AMLApi.Core.Rest
         }
 
         public abstract Task<RestPlayer> FetchPlayer(Guid guid);
-        public abstract Task<IReadOnlyCollection<RestPlayer>> FetchPlayers();
-        public abstract Task<IReadOnlyList<RestPlayer>> FetchPlayerLeaderboard(StatType statType);
+        public abstract Task<IReadOnlyList<RestPlayer>> FetchPlayerLeaderboard(StatType statType, int page = 1);
 
         public abstract Task<RestMaxMode> FetchMaxMode(int id);
         public abstract Task<IReadOnlyCollection<RestMaxMode>> FetchMaxModes();
@@ -37,14 +36,9 @@ namespace AMLApi.Core.Rest
             return await FetchPlayer(guid);
         }
 
-        async Task<IReadOnlyCollection<Player>> IClient.FetchPlayers()
+        async Task<IEnumerable<Player>> IClient.FetchPlayerLeaderboard(StatType statType, int page)
         {
-            return await FetchPlayers();
-        }
-
-        async Task<IEnumerable<Player>> IClient.FetchPlayerLeaderboard(StatType statType)
-        {
-            return await FetchPlayerLeaderboard(statType);
+            return await FetchPlayerLeaderboard(statType, page);
         }
 
         async Task<MaxMode> IClient.FetchMaxMode(int id)

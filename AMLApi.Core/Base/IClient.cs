@@ -27,17 +27,12 @@ namespace AMLApi.Core.Base
         Task<Player> FetchPlayer(Guid guid);
 
         /// <summary>
-        /// Fetches all players.
-        /// </summary>
-        /// <returns><see cref="IReadOnlyCollection{T}"/> of <see cref="Player"/>'s.</returns>
-        Task<IReadOnlyCollection<Player>> FetchPlayers();
-
-        /// <summary>
         /// Fetches players leaderboard by target <see cref="StatType"/>.
         /// </summary>
         /// <param name="statType">Target <see cref="StatType"/>.</param>
+        /// <param name="page">Page number.</param>
         /// <returns><see cref="IEnumerable{T}"/> of <see cref="Player"/>'s.</returns>
-        Task<IEnumerable<Player>> FetchPlayerLeaderboard(StatType statType);
+        Task<IEnumerable<Player>> FetchPlayerLeaderboard(StatType statType, int page = 1);
 
         /// <summary>
         /// Fetches a maxmode by target id.

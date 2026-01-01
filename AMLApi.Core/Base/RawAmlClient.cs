@@ -73,16 +73,18 @@ namespace AMLApi.Core.Base
         /// <returns><see cref="Array"/> of <see cref="MaxModeData"/> objects.</returns>
         public async Task<MaxModeData[]> FetchMaxModes()
         {
-            return await GetResponse<MaxModeData[]>("/levels/ml/page/1");
+            return await GetResponse<MaxModeData[]>("/levels/ml/page/all");
         }
 
         /// <summary>
         /// Fetches a player leaderboard by specific <see cref="StatType"/>.
         /// </summary>
+        /// <param name="statType">Target player stat.</param>
+        /// <param name="page">Returned page number.</param>
         /// <returns><see cref="Array"/> of <see cref="PlayerData"/> objects.</returns>
-        public async Task<PlayerData[]> FetchPlayerLeaderboard(StatType statType)
+        public async Task<PlayerData[]> FetchPlayerLeaderboard(StatType statType, int page)
         {
-            return await GetResponse<PlayerData[]>($"/players/{statType.ToRoute()}/page/1");
+            return await GetResponse<PlayerData[]>($"/players/{statType.ToRoute()}/page/{page}");
         }
 
         /// <summary>

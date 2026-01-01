@@ -49,6 +49,9 @@ namespace AMLApi.Core.Data
         [JsonPropertyName("aim")]
         public int AimSkillSet { get; set; }
 
+        [JsonPropertyName("description")]
+        public string? Description { get; set; }
+
         [JsonPropertyName("greenrun")]
         public int GreenrunSkillSet { get; set; }
 
