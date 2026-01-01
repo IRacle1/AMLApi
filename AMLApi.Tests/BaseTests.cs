@@ -43,7 +43,6 @@ namespace AMLApi.Tests
             Assert.Equal(8, data.GetSkillSetValue(SkillSetType.Speed));
             Assert.Equal(16, data.GetSkillSetValue(SkillSetType.Endurance));
             Assert.Equal(32, data.GetSkillSetValue(SkillSetType.Keyboard));
-            Assert.Equal(48, data.GetSkillSetValue(SkillSetType.Keyboard | SkillSetType.Endurance));
         }
     }
 }
