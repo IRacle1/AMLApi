@@ -8,7 +8,7 @@ namespace AMLApi.Core.Data
         public string Name { get; set; } = string.Empty;
 
         [JsonPropertyName("videoID")]
-        public string? VideoId { get; set; }
+        public string VideoId { get; set; } = string.Empty;
 
         [JsonPropertyName("game")]
         public string GameName { get; set; } = string.Empty;
