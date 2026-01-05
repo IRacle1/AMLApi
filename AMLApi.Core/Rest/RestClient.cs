@@ -2,7 +2,8 @@
 using System.Numerics;
 
 using AMLApi.Core.Base;
-using AMLApi.Core.Data;
+using AMLApi.Core.Data.Clans;
+using AMLApi.Core.Data.Players;
 using AMLApi.Core.Enums;
 using AMLApi.Core.Rest.Instances;
 
@@ -13,7 +14,7 @@ namespace AMLApi.Core.Rest
         public static RestClient CreateClient()
         {
             RawAmlClient client = RawAmlClient.CreateClient();
-            return new RestAmlClient(client);
+            return new AmlRestClient(client);
         }
 
         public abstract Task<RestPlayer> FetchPlayer(Guid guid);
@@ -29,7 +30,12 @@ namespace AMLApi.Core.Rest
         public abstract Task<IReadOnlyCollection<RestRecord>> FetchMaxModeRecords(MaxMode maxMode);
         public abstract Task<IReadOnlyCollection<RestRecord>> FetchMaxModeRecords(int id);
 
-        public abstract Task<(IReadOnlyCollection<RestMaxMode>, IReadOnlyCollection<ShortPlayerData>)> Search(string query);
+        public abstract Task<IReadOnlyCollection<RestClan>> FetchClans();
+        public abstract Task<RestClan> FetchClan(Guid clanGuid);
+        public abstract Task<IReadOnlyCollection<RestShortPlayer>> FetchClanMembers(Clan clan);
+        public abstract Task<IReadOnlyCollection<RestShortPlayer>> FetchClanMembers(Guid clanGuid);
+
+        public abstract Task<(IReadOnlyCollection<RestMaxMode>, IReadOnlyCollection<RestShortPlayer>)> Search(string query);
 
         async Task<Player> IClient.FetchPlayer(Guid guid)
         {
@@ -76,7 +82,27 @@ namespace AMLApi.Core.Rest
             return await FetchMaxModeRecords(id);
         }
 
-        async Task<(IReadOnlyCollection<MaxMode>, IReadOnlyCollection<ShortPlayerData>)> IClient.Search(string query)
+        async Task<IReadOnlyCollection<Clan>> IClient.FetchClans()
+        {
+            return await FetchClans();
+        }
+
+        async Task<Clan> IClient.FetchClan(Guid clanGuid)
+        {
+            return await FetchClan(clanGuid);
+        }
+
+        async Task<IReadOnlyCollection<ShortPlayer>> IClient.FetchClanMembers(Clan clan)
+        {
+            return await FetchClanMembers(clan);
+        }
+
+        async Task<IReadOnlyCollection<ShortPlayer>> IClient.FetchClanMembers(Guid clanGuid)
+        {
+            return await FetchClanMembers(clanGuid);
+        }
+
+        async Task<(IReadOnlyCollection<MaxMode>, IReadOnlyCollection<ShortPlayer>)> IClient.Search(string query)
         {
             return await Search(query);
         }

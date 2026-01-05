@@ -1,36 +1,34 @@
-﻿using AMLApi.Core.Data;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using AMLApi.Core.Base.Instances;
+using AMLApi.Core.Data;
 
 namespace AMLApi.Core.Base
 {
-    /// <summary>
-    /// Base abstract object for records.
-    /// </summary>
     public abstract class Record : IEquatable<Record>
     {
-        protected readonly RecordData recordData;
-
-        protected Record(RecordData data)
+        protected Record()
         {
-            recordData = data;
-            CompletionDate = DateOnly.FromDateTime(DateTimeOffset.FromUnixTimeMilliseconds(data.DateUtc).UtcDateTime);
-            if (data.TimeTaken is not null)
-                TimeTaken = TimeSpan.FromMilliseconds(data.TimeTaken.Value);
         }
 
         /// <summary>
         /// Gets a target player guid.
         /// </summary>
-        public Guid PlayerGuid => recordData.UId;
+        public abstract Guid PlayerGuid { get; }
 
         /// <summary>
         /// Gets a target maxmode id.
         /// </summary>
-        public int MaxModeId => recordData.MaxModeId;
+        public abstract int MaxModeId { get; }
 
         /// <summary>
         /// Gets a records video link.
         /// </summary>
-        public string VideoLink => recordData.VideoLink;
+        public abstract string VideoLink { get; }
 
         /// <summary>
         /// Gets a record 'progress'.
@@ -38,12 +36,12 @@ namespace AMLApi.Core.Base
         /// <remarks>
         /// Will be 100 in 100% times.
         /// </remarks>
-        public int Progress => recordData.Progress ?? 100;
+        public abstract int Progress { get; }
 
         /// <summary>
         /// Gets a record completion date.
         /// </summary>
-        public DateOnly CompletionDate { get; }
+        public abstract DateOnly CompletionDate { get; }
 
         /// <summary>
         /// Gets a time taken idk.
@@ -51,32 +49,32 @@ namespace AMLApi.Core.Base
         /// <remarks>
         /// Idk
         /// </remarks>
-        public TimeSpan? TimeTaken { get; }
+        public abstract TimeSpan? TimeTaken { get; }
 
         /// <summary>
         /// Gets a value that indicates whether the record was on mobile.
         /// </summary>
-        public bool IsMobile => recordData.IsMobile != 0;
+        public abstract bool IsMobile { get; }
 
         /// <summary>
         /// Gets a value that indicates whether the record was checked.
         /// </summary>
-        public bool IsChecked => recordData.IsChecked;
+        public abstract bool IsChecked { get; }
 
         /// <summary>
         /// Gets a record comment.
         /// </summary>
-        public string? Comment => recordData.Comment;
+        public abstract string? Comment { get; }
 
         /// <summary>
         /// Gets a record video FPS.
         /// </summary>
-        public int? FPS => recordData.FPS;
+        public abstract int? FPS { get; }
 
         /// <summary>
         /// Gets a value that indicates whether the notification was sent to a target player.
         /// </summary>
-        public bool IsNotificationSent => recordData.IsNotificationSent;
+        public abstract bool IsNotificationSent { get; }
 
         /// <inheritdoc/>
         public bool Equals(Record? other)

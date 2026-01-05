@@ -1,3 +1,5 @@
+using System.Numerics;
+
 using AMLApi.Core.Base;
 using AMLApi.Core.Enums;
 
@@ -209,6 +211,48 @@ namespace AMLApi.Tests
 
                 Assert.Equal(id, record.MaxModeId);
             }
+        }
+
+        [Fact]
+        public async Task Clans_ListValidProperties()
+        {
+            IClient client = clientFixture.GetRestClient();
+            var clans = await client.FetchClans();
+
+            foreach (var item in clans)
+            {
+                output.WriteLine("Clan: {0}", item);
+                Assert.NotNull(item.Description);
+                Assert.NotNull(item.Tag);
+                Assert.NotNull(item.Name);
+            }
+        }
+
+        [Theory]
+        [InlineData("7319cd98-7ba0-4e7b-a887-4ae259ac7be3")]
+        public async Task Clans_MembersListValidProperties(string rawGuid)
+        {
+            Guid guid = Guid.Parse(rawGuid);
+
+            IClient client = clientFixture.GetRestClient();
+
+            var clans = await client.FetchClanMembers(guid);
+
+            foreach (var item in clans)
+            {
+                output.WriteLine("Member: {0}", item);
+                Assert.NotNull(item.Nickname);
+            }
+        }
+
+        [Theory]
+        [InlineData("7319cd98-7ba0-4e7b-a887-4ae259ac7be3")]
+        public async Task Clans_FetchClanNotException(string rawGuid)
+        {
+            Guid guid = Guid.Parse(rawGuid);
+
+            IClient client = clientFixture.GetRestClient();
+            var clan = await client.FetchClan(guid);
         }
     }
 }

@@ -1,7 +1,11 @@
-﻿using System.Net.Http.Json;
+﻿using System;
+using System.Net.Http.Json;
 using System.Text.Json;
 
 using AMLApi.Core.Data;
+using AMLApi.Core.Data.Clans;
+using AMLApi.Core.Data.MaxModes;
+using AMLApi.Core.Data.Players;
 using AMLApi.Core.Enums;
 using AMLApi.Core.Json;
 
@@ -79,12 +83,23 @@ namespace AMLApi.Core.Base
         /// <summary>
         /// Fetches a player leaderboard by specific <see cref="StatType"/>.
         /// </summary>
-        /// <param name="statType">Target player stat.</param>
+        /// <param name="statType">Target stat.</param>
         /// <param name="page">Returned page number.</param>
         /// <returns><see cref="Array"/> of <see cref="PlayerData"/> objects.</returns>
         public async Task<PlayerData[]> FetchPlayerLeaderboard(StatType statType, int page)
         {
             return await GetResponse<PlayerData[]>($"/players/{statType.ToRoute()}/page/{page}");
+        }
+
+        /// <summary>
+        /// Fetches a clan leaderboard by specific <see cref="StatType"/>.
+        /// </summary>
+        /// <param name="statType">Target stat.</param>
+        /// <param name="page">Returned page number.</param>
+        /// <returns><see cref="Array"/> of <see cref="ClanData"/> objects.</returns>
+        public async Task<ClanData[]> FetchClansLeaderboard(StatType statType, int page)
+        {
+            return await GetResponse<ClanData[]>($"/clans/{statType.ToRoute()}/page/{page}");
         }
 
         /// <summary>
@@ -94,7 +109,22 @@ namespace AMLApi.Core.Base
         /// <returns><see cref="Array"/> of <see cref="RecordData"/> objects.</returns>
         public async Task<RecordData[]> FetchPlayerRecords(Guid guid)
         {
-            return await GetResponse<RecordData[]>($"player/{guid}/records/skillValue");
+            return await GetResponse<RecordData[]>($"/player/{guid}/records/skillValue");
+        }
+
+        public async Task<ClanData> FetchClan(Guid guid)
+        {
+            return await GetResponse<ClanData>($"/clans/{guid}");
+        }
+
+        public async Task<ClanData[]> FetchClans()
+        {
+            return await GetResponse<ClanData[]>($"/clans");
+        }
+
+        public async Task<ClanPlayerData[]> FetchClanMembers(Guid guid)
+        {
+            return await GetResponse<ClanPlayerData[]>($"/clans/{guid}/members");
         }
 
         /// <summary>
@@ -104,7 +134,7 @@ namespace AMLApi.Core.Base
         /// <returns><see cref="SearchResult"/> object.</returns>
         public async Task<SearchResult> Search(string query)
         {
-            return await GetResponse<SearchResult>($"/search/{Uri.EscapeDataString(query)}");
+            return await GetResponse<SearchResult>($"search/{Uri.EscapeDataString(query)}");
         }
 
         private async Task<T> GetResponse<T>(string url)

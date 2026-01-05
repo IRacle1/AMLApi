@@ -1,9 +1,10 @@
 ﻿using AMLApi.Core.Base;
-using AMLApi.Core.Data;
+using AMLApi.Core.Base.Instances;
+using AMLApi.Core.Data.MaxModes;
 
 namespace AMLApi.Core.Rest
 {
-    public abstract class RestMaxMode : MaxMode
+    public abstract class RestMaxMode : AmlMaxMode
     {
         protected RestMaxMode(MaxModeData data) :
             base(data)

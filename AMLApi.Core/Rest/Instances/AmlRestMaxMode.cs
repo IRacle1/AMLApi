@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-using AMLApi.Core.Data;
+using AMLApi.Core.Data.MaxModes;
 
 namespace AMLApi.Core.Rest.Instances
 {

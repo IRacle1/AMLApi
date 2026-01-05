@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using AMLApi.Core.Data;
+using AMLApi.Core.Data.Clans;
+using AMLApi.Core.Data.Players;
 using AMLApi.Core.Enums;
+using AMLApi.Core.Rest;
 
 namespace AMLApi.Core.Base
 {
@@ -13,8 +15,6 @@ namespace AMLApi.Core.Base
     /// Abstract interface for clients.
     /// </summary>
     /// <remarks>
-    /// <seealso cref="Cached.CachedClient"/>
-    /// <seealso cref="RawAmlClient"/>
     /// <seealso cref="Rest.RestClient"/>
     /// </remarks>
     public interface IClient
@@ -82,11 +82,19 @@ namespace AMLApi.Core.Base
         /// <returns><see cref="IReadOnlyCollection{T}"/> of <see cref="Record"/>'s.</returns>
         Task<IReadOnlyCollection<Record>> FetchMaxModeRecords(int id);
 
+        Task<IReadOnlyCollection<Clan>> FetchClans();
+
+        Task<Clan> FetchClan(Guid clanGuid);
+
+        Task<IReadOnlyCollection<ShortPlayer>> FetchClanMembers(Clan clan);
+
+        Task<IReadOnlyCollection<ShortPlayer>> FetchClanMembers(Guid clanGuid);
+
         /// <summary>
         /// Searches by specific query. 
         /// </summary>
         /// <param name="query">Target query.</param>
-        /// <returns><see cref="Tuple{T1, T2}"/> of <see cref="IReadOnlyCollection{T}"/>'s of <see cref="MaxMode"/> and <see cref="ShortPlayerData"/> respectively.</returns>
-        Task<(IReadOnlyCollection<MaxMode>, IReadOnlyCollection<ShortPlayerData>)> Search(string query);
+        /// <returns><see cref="Tuple{T1, T2}"/> of <see cref="IReadOnlyCollection{T}"/>'s of <see cref="MaxMode"/> and <see cref="ShortPlayer"/> respectively.</returns>
+        Task<(IReadOnlyCollection<MaxMode>, IReadOnlyCollection<ShortPlayer>)> Search(string query);
     }
 }

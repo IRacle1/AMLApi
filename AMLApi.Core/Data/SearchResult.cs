@@ -1,4 +1,7 @@
-﻿namespace AMLApi.Core.Data
+﻿using AMLApi.Core.Data.MaxModes;
+using AMLApi.Core.Data.Players;
+
+namespace AMLApi.Core.Data
 {
     public class SearchResult
     {

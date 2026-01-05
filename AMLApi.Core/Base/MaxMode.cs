@@ -1,81 +1,45 @@
-﻿using AMLApi.Core.Data;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using AMLApi.Core.Base.Instances;
+using AMLApi.Core.Data.MaxModes;
 using AMLApi.Core.Enums;
 
 namespace AMLApi.Core.Base
 {
-    /// <summary>
-    /// Base abstract object for max mode.
-    /// </summary>
-    public abstract class MaxMode : IEquatable<MaxMode>
+    public abstract class MaxMode : ShortMaxMode
     {
-        protected readonly MaxModeData maxModeData;
-
-        protected MaxMode(MaxModeData data)
+        protected MaxMode()
         {
-            maxModeData = data;
-            VerificationVideoUrl = $"https://youtu.be/{data.VideoId}";
         }
 
         /// <summary>
-        /// Gets a maxmode id.
+        /// Gets a maxmode creator nickname.
         /// </summary>
-        public int Id => maxModeData.Id;
-
-        /// <summary>
-        /// Gets a maxmode name.
-        /// </summary>
-        public string Name => maxModeData.Name;
+        public abstract string Creator { get; }
 
         /// <summary>
         /// Gets a maxmode creator nickname.
         /// </summary>
-        public string Creator => maxModeData.Creator;
-
-        /// <summary>
-        /// Gets a maxmode creator nickname.
-        /// </summary>
-        public string Length => maxModeData.Length;
-
-        /// <summary>
-        /// Gets a full maxmode verification video url.
-        /// </summary>
-        public string VerificationVideoUrl { get; }
-
-        /// <summary>
-        /// Gets a youtube verification video id for maxmode.
-        /// </summary>
-        public string VerificationVideoId => maxModeData.VideoId;
-
-        /// <summary>
-        /// Gets a maxmode game name.
-        /// </summary>
-        public string GameName => maxModeData.GameName;
+        public abstract string Length { get; }
 
         /// <summary>
         /// Gets a maxmode game download url.
         /// </summary>
-        public string GameUrl => maxModeData.GameUrl;
-
-        /// <summary>
-        /// Gets a max mode top ranked by 100/0
-        /// </summary>
-        /// <remarks>
-        /// Maxmode has 2 points type - <see cref="PointType.Skill">skill</see> and <see cref="PointType.Rng">rng</see>.
-        /// Skill points are calculated based on abstract formula `p=f(t)`, where t - actual max mode top based on 100% skill.
-        /// And rng is an absolute value between 0-3000 for specific maxmode.
-        /// In other words, for ranking maxmode staff uses only `Top` and `rng value`, so they ranks them by 100/0 and 0/100, other ratios are automatic.
-        /// </remarks>
-        public int Top => maxModeData.Top;
+        public abstract string GameUrl { get; }
 
         /// <summary>
         /// Gets a value that indicates whether the maxmode is self imposed.
         /// </summary>
-        public bool IsSelfImposed => maxModeData.IsSelfImposed;
+        public abstract bool IsSelfImposed { get; }
 
         /// <summary>
         /// Gets a value that indicates whether the maxmode is on pre patch verion of a game.
         /// </summary>
-        public bool IsPrePatch => maxModeData.IsPrePatch;
+        public abstract bool IsPrePatch { get; }
 
         /// <summary>
         /// Gets a value that indicates whether the maxmode is extra.
@@ -83,17 +47,17 @@ namespace AMLApi.Core.Base
         /// <remarks>
         /// Idk what extra means bro😭.
         /// </remarks>
-        public bool IsExtra => maxModeData.IsExtra;
+        public abstract bool IsExtra { get; }
 
         /// <summary>
         /// Xd.
         /// </summary>
-        public bool IsMaxModeOfTheMonth => maxModeData.IsMaxModeOfTheMonth;
+        public abstract bool IsMaxModeOfTheMonth { get; }
 
         /// <summary>
         /// Gets a maxmode description.
         /// </summary>
-        public string? Description => maxModeData.Description;
+        public abstract string? Description { get; }
 
         /// <summary>
         /// Gets a maxmode points value by <see cref="PointType"/> argument.
@@ -103,16 +67,7 @@ namespace AMLApi.Core.Base
         /// <remarks>
         /// Support <see cref="PointType"/> flags.
         /// </remarks>
-        public int GetPoints(PointType pointType)
-        {
-            int res = 0;
-            if (pointType.HasFlag(PointType.Rng))
-                res += maxModeData.RngPoints;
-            if (pointType.HasFlag(PointType.Skill))
-                res += maxModeData.SkillPoints;
-
-            return res;
-        }
+        public abstract int GetPoints(PointType pointType);
 
         /// <summary>
         /// Calculates total maxmode points by skill ratio.
@@ -120,16 +75,7 @@ namespace AMLApi.Core.Base
         /// <param name="skillRatio">skill ratio in percentage, [0,100].</param>
         /// <returns>Total points by ratio.</returns>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="skillRatio"/> is out of range [0,100].</exception>
-        public double GetPointsByRatio(int skillRatio)
-        {
-            if (skillRatio < 0 || skillRatio > 100)
-                throw new ArgumentOutOfRangeException(nameof(skillRatio));
-
-            double skillScale = skillRatio / 100.0;
-            double rngScale = 1 - skillScale;
-
-            return skillScale * maxModeData.SkillPoints + rngScale * maxModeData.RngPoints;
-        }
+        public abstract double GetPointsByRatio(int skillRatio);
 
         /// <summary>
         /// Return skillset value in percentage, for specific <see cref="SkillSetType"/>.
@@ -139,53 +85,7 @@ namespace AMLApi.Core.Base
         /// <remarks>
         /// Supports <see cref="SkillSetType"/> flags.
         /// </remarks>
-        public int GetSkillSetPercent(SkillSetType skillSetType)
-        {
-            int ret = 0;
-
-            foreach (SkillSetType check in Enum.GetValues<SkillSetType>())
-            {
-                if (check is SkillSetType.None or SkillSetType.All)
-                    continue;
-
-                if (skillSetType.HasFlag(check))
-                    ret += maxModeData.GetSkillSetValue(check);
-            }
-
-            return ret;
-        }
-
-        public MaxModeData ToData()
-        {
-            return maxModeData;
-        }
-
-        /// <inheritdoc/>
-        public bool Equals(MaxMode? other)
-        {
-            if (other is null)
-                return false;
-
-            return Id == other.Id;
-        }
-
-        /// <inheritdoc/>
-        public override bool Equals(object? obj)
-        {
-            return Equals(obj as MaxMode);
-        }
-
-        /// <inheritdoc/>
-        public override int GetHashCode()
-        {
-            return Id.GetHashCode();
-        }
-
-        /// <inheritdoc/>
-        public override string ToString()
-        {
-            return Name;
-        }
+        public abstract int GetSkillSetPercent(SkillSetType skillSetType);
     }
 
     public class MaxModeRatioComparer<T> : IComparer<T>

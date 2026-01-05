@@ -1,14 +1,18 @@
 ﻿using AMLApi.Core.Base;
+using AMLApi.Core.Base.Instances;
 using AMLApi.Core.Data;
+using AMLApi.Core.Data.Clans;
+using AMLApi.Core.Data.MaxModes;
+using AMLApi.Core.Data.Players;
 using AMLApi.Core.Enums;
 
 namespace AMLApi.Core.Rest.Instances
 {
-    internal class RestAmlClient : RestClient
+    internal class AmlRestClient : RestClient
     {
         private readonly RawAmlClient baseClient;
 
-        internal RestAmlClient(RawAmlClient baseClient)
+        internal AmlRestClient(RawAmlClient baseClient)
         {
             this.baseClient = baseClient;
         }
@@ -63,12 +67,56 @@ namespace AMLApi.Core.Rest.Instances
             return await FetchMaxModeRecords(maxMode.Id);
         }
 
-        public override async Task<(IReadOnlyCollection<RestMaxMode>, IReadOnlyCollection<ShortPlayerData>)> Search(string query)
+        public override async Task<RestClan> FetchClan(Guid clanGuid)
+        {
+            var raw = await baseClient.FetchClan(clanGuid);
+
+            return CreateClan(raw);
+        }
+
+        public override async Task<IReadOnlyCollection<RestClan>> FetchClans()
+        {
+            var raw = await baseClient.FetchClans();
+            return Array.ConvertAll(raw, CreateClan);
+        }
+
+        public override Task<IReadOnlyCollection<RestShortPlayer>> FetchClanMembers(Clan clan)
+        {
+            return FetchClanMembers(clan.Guid);
+        }
+
+        public override async Task<IReadOnlyCollection<RestShortPlayer>> FetchClanMembers(Guid clanGuid)
+        {
+            var raw = await baseClient.FetchClanMembers(clanGuid);
+            return Array.ConvertAll(raw, CreateShortPlayerClan);
+        }
+
+        public override async Task<(IReadOnlyCollection<RestMaxMode>, IReadOnlyCollection<RestShortPlayer>)> Search(string query)
         {
             SearchResult result = await baseClient.Search(query);
 
             IReadOnlyCollection<RestMaxMode> maxModes = Array.ConvertAll(result.MaxModes, CreateMaxMode);
-            return (maxModes, result!.Players);
+            IReadOnlyCollection<RestShortPlayer> players = Array.ConvertAll(result.Players, CreateShortPlayer);
+            return (maxModes, players);
+        }
+
+        private RestShortPlayer CreateShortPlayer(ShortPlayerData data)
+        {
+            return new AmlRestShortPlayer(this, data);
+        }
+
+        private RestShortPlayer CreateShortPlayerClan(ClanPlayerData data)
+        {
+            return CreateShortPlayer(new ShortPlayerData
+                {
+                    Guid = data.UserId,
+                    Name = data.PlayerData.Name,
+                });
+        }
+
+        private RestShortMaxMode CreateShortMaxMode(ShortMaxModeData data, int id)
+        {
+            return new AmlRestShortMaxMode(this, data, id);
         }
 
         private RestPlayer CreatePlayer(PlayerData data)
@@ -89,7 +137,14 @@ namespace AMLApi.Core.Rest.Instances
 
         private RestRecord CreateRecord(RecordData data)
         {
-            return new AmlRestRecord(this, data);
+            RestPlayer? player = data.Player is null ? null : CreatePlayer(data.Player);
+            RestShortMaxMode? maxMode = data.MaxMode is null ? null : CreateShortMaxMode(data.MaxMode, data.MaxModeId);
+            return new AmlRestRecord(this, data, player, maxMode);
+        }
+
+        private RestClan CreateClan(ClanData data)
+        {
+            return new AmlRestClan(this, data);
         }
     }
 }

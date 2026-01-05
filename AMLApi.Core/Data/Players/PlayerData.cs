@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace AMLApi.Core.Data
+namespace AMLApi.Core.Data.Players
 {
     public class PlayerData
     {
@@ -79,7 +79,7 @@ namespace AMLApi.Core.Data
         [JsonPropertyName("isHidden")]
         public bool IsHidden { get; set; }
 
-        [JsonPropertyName("clan")]
-        public string? Clan { get; set; }
+        [JsonPropertyName("clan_tag")]
+        public string? ClanTag { get; set; }
     }
 }

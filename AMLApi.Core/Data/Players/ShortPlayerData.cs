@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace AMLApi.Core.Data
+namespace AMLApi.Core.Data.Players
 {
     public class ShortPlayerData
     {

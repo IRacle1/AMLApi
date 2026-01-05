@@ -1,7 +1,8 @@
 ﻿using System.Reflection;
 
 using AMLApi.Core.Base;
-using AMLApi.Core.Data;
+using AMLApi.Core.Data.MaxModes;
+using AMLApi.Core.Data.Players;
 using AMLApi.Core.Enums;
 
 namespace AMLApi.Core
@@ -58,6 +59,14 @@ namespace AMLApi.Core
             "oceania" => Continent.Oceania,
             "trans-continental" => Continent.TransContinental,
             _ => Continent.None,
+        };
+
+        public static ClanRoleType RoleTypeFromString(this string? raw) => (raw ?? string.Empty).ToLowerInvariant() switch
+        {
+            "member" => ClanRoleType.Member,
+            "admin" => ClanRoleType.Admin,
+            "owner" => ClanRoleType.Owner,
+            _ => ClanRoleType.Member,
         };
 
         /// <summary>

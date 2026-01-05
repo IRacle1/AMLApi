@@ -1,4 +1,4 @@
-﻿using AMLApi.Core.Data;
+﻿using AMLApi.Core.Data.Players;
 
 namespace AMLApi.Core.Rest.Instances
 {

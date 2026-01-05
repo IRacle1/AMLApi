@@ -2,6 +2,8 @@
 using System.Text.Json.Serialization;
 
 using AMLApi.Core.Data;
+using AMLApi.Core.Data.MaxModes;
+using AMLApi.Core.Data.Players;
 
 namespace AMLApi.Core.Json
 {

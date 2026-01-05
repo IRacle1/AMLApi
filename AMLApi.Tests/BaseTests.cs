@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using AMLApi.Core;
 using AMLApi.Core.Base;
-using AMLApi.Core.Data;
+using AMLApi.Core.Data.MaxModes;
 using AMLApi.Core.Enums;
 
 using Xunit.Abstractions;

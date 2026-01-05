@@ -2,6 +2,8 @@
 
 using AMLApi.Core.Base;
 using AMLApi.Core.Data;
+using AMLApi.Core.Data.MaxModes;
+using AMLApi.Core.Data.Players;
 
 namespace AMLApi.Core.Rest.Instances
 {
@@ -9,13 +11,13 @@ namespace AMLApi.Core.Rest.Instances
     {
         protected RestClient client;
 
-        internal AmlRestRecord(RestClient amlClient, RecordData data)
+        internal AmlRestRecord(RestClient amlClient, RecordData data, RestPlayer? player, RestShortMaxMode? maxMode)
             : base(data)
         {
             client = amlClient;
 
-            PlayerData = data.Player!;
-            MaxModeData = data.MaxMode!;
+            Player = player;
+            MaxMode = maxMode;
         }
 
         public override async Task<RestMaxMode> FetchMaxMode()
@@ -28,8 +30,8 @@ namespace AMLApi.Core.Rest.Instances
             return client.FetchPlayer(PlayerGuid);
         }
 
-        public override ShortMaxModeData? MaxModeData { get; }
+        public override RestShortMaxMode? MaxMode { get; }
 
-        public override PlayerData? PlayerData { get; }
+        public override RestPlayer? Player { get; }
     }
 }
