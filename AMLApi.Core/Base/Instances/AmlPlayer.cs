@@ -14,7 +14,7 @@ namespace AMLApi.Core.Base.Instances
         protected AmlPlayer(PlayerData data)
         {
             playerData = data;
-            DiscordId = ulong.TryParse(data.DiscordId, out ulong res) ? res : 0;
+            DiscordId = ulong.TryParse(data.DiscordId, out ulong res) ? res : null;
             IsPlaceholder = DiscordId == 0;
             AvatarUrl = string.Format(AvatarUrlFormat, Guid.ToString());
             Continent = data.Continent.ContinentFromString();
@@ -45,7 +45,7 @@ namespace AMLApi.Core.Base.Instances
         public override string? DiscordNickname => playerData.DiscordName;
 
         /// <inheritdoc/>
-        public override ulong DiscordId { get; }
+        public override ulong? DiscordId { get; }
 
         /// <inheritdoc/>
         public override int ModesBeaten => playerData.ModesBeaten;

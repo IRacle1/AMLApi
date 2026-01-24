@@ -16,6 +16,12 @@ namespace AMLApi.Core.Data
         [JsonPropertyName("videoLink")]
         public string VideoLink { get; set; } = null!;
 
+        [JsonPropertyName("skillValue")]
+        public int SkillValue { get; set; }
+
+        [JsonPropertyName("rngValue")]
+        public int RngValue { get; set; }
+
         [JsonPropertyName("progress")]
         public int? Progress { get; set; }
 

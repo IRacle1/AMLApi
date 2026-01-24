@@ -114,9 +114,9 @@ namespace AMLApi.Core.Rest.Instances
                 });
         }
 
-        private RestShortMaxMode CreateShortMaxMode(ShortMaxModeData data, int id)
+        private RestShortMaxMode CreateShortMaxMode(ShortMaxModeData data, int id, int skillPoints, int rngPoints)
         {
-            return new AmlRestShortMaxMode(this, data, id);
+            return new AmlRestShortMaxMode(this, data, id, skillPoints, rngPoints);
         }
 
         private RestPlayer CreatePlayer(PlayerData data)
@@ -138,7 +138,7 @@ namespace AMLApi.Core.Rest.Instances
         private RestRecord CreateRecord(RecordData data)
         {
             RestPlayer? player = data.Player is null ? null : CreatePlayer(data.Player);
-            RestShortMaxMode? maxMode = data.MaxMode is null ? null : CreateShortMaxMode(data.MaxMode, data.MaxModeId);
+            RestShortMaxMode? maxMode = data.MaxMode is null ? null : CreateShortMaxMode(data.MaxMode, data.MaxModeId, data.SkillValue, data.RngValue);
             return new AmlRestRecord(this, data, player, maxMode);
         }
 

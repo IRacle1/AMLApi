@@ -58,9 +58,9 @@ namespace AMLApi.Core.Base
         public abstract string? DiscordNickname { get; }
 
         /// <summary>
-        /// Gets a player discord id(can be 0).
+        /// Gets a player discord id(can be null).
         /// </summary>
-        public abstract ulong DiscordId { get; }
+        public abstract ulong? DiscordId { get; }
 
         /// <summary>
         /// Gets a player modes beaten count.

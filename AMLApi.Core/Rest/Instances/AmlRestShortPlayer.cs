@@ -14,8 +14,8 @@ namespace AMLApi.Core.Rest.Instances
     {
         protected RestClient client;
 
-        internal AmlRestShortMaxMode(RestClient amlClient, ShortMaxModeData data, int id)
-            : base(data, id)
+        internal AmlRestShortMaxMode(RestClient amlClient, ShortMaxModeData data, int id, int skillPoints, int rngPoints)
+            : base(data, id, skillPoints, rngPoints)
         {
             client = amlClient;
         }

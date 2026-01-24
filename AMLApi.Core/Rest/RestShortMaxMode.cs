@@ -7,8 +7,8 @@ namespace AMLApi.Core.Rest
 {
     public abstract class RestShortMaxMode : AmlShortMaxMode
     {
-        protected RestShortMaxMode(ShortMaxModeData data, int id) 
-            : base(data, id)
+        protected RestShortMaxMode(ShortMaxModeData data, int id, int skillPoints, int rngPoints) 
+            : base(data, id, skillPoints, rngPoints)
         {
         }
 

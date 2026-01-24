@@ -60,24 +60,6 @@ namespace AMLApi.Core.Base
         public abstract string? Description { get; }
 
         /// <summary>
-        /// Gets a maxmode points value by <see cref="PointType"/> argument.
-        /// </summary>
-        /// <param name="pointType"><see cref="PointType"/> needed to calculate.</param>
-        /// <returns>Total points value.</returns>
-        /// <remarks>
-        /// Support <see cref="PointType"/> flags.
-        /// </remarks>
-        public abstract int GetPoints(PointType pointType);
-
-        /// <summary>
-        /// Calculates total maxmode points by skill ratio.
-        /// </summary>
-        /// <param name="skillRatio">skill ratio in percentage, [0,100].</param>
-        /// <returns>Total points by ratio.</returns>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="skillRatio"/> is out of range [0,100].</exception>
-        public abstract double GetPointsByRatio(int skillRatio);
-
-        /// <summary>
         /// Return skillset value in percentage, for specific <see cref="SkillSetType"/>.
         /// </summary>
         /// <param name="skillSetType">Target <see cref="SkillSetType"/>.</param>
