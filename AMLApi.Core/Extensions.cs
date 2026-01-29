@@ -84,7 +84,7 @@ namespace AMLApi.Core
             return func(maxModeData);
         }
 
-        internal static async Task<IReadOnlyList<T>> GetAllPagesPlayers<T>(this RawAmlClient client, StatType statType, Func<PlayerData, T> selector)
+        public static async Task<IReadOnlyList<T>> GetAllPagesPlayers<T>(this RawAmlClient client, StatType statType, Func<PlayerData, T> selector)
         {
             int page = 1;
 
