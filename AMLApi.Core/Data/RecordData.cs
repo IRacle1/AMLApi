@@ -26,7 +26,7 @@ namespace AMLApi.Core.Data
         public int? Progress { get; set; }
 
         [JsonPropertyName("timestamp")]
-        public long DateUtc { get; set; }
+        public long? DateUtc { get; set; }
 
         [JsonPropertyName("timetaken")]
         public long? TimeTaken { get; set; }

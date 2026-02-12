@@ -41,7 +41,11 @@ namespace AMLApi.Core.Base
         /// <summary>
         /// Gets a record completion date.
         /// </summary>
-        public abstract DateOnly CompletionDate { get; }
+        /// <remarks>
+        /// Should not be null, but dumb aml system doesn't prevent incorrect logic at all.
+        /// So in some cases it can be null😭.
+        /// </remarks>
+        public abstract DateOnly? CompletionDate { get; }
 
         /// <summary>
         /// Gets a time taken idk.

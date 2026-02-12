@@ -12,7 +12,8 @@ namespace AMLApi.Core.Base.Instances
         protected AmlRecord(RecordData data)
         {
             recordData = data;
-            CompletionDate = DateOnly.FromDateTime(DateTimeOffset.FromUnixTimeMilliseconds(data.DateUtc).UtcDateTime);
+            if (data.DateUtc is not null)
+                CompletionDate = DateOnly.FromDateTime(DateTimeOffset.FromUnixTimeMilliseconds(data.DateUtc.Value).UtcDateTime);
             if (data.TimeTaken is not null)
                 TimeTaken = TimeSpan.FromMilliseconds(data.TimeTaken.Value);
         }
@@ -30,7 +31,7 @@ namespace AMLApi.Core.Base.Instances
         public override int Progress => recordData.Progress ?? 100;
 
         /// <inheritdoc/>
-        public override DateOnly CompletionDate { get; }
+        public override DateOnly? CompletionDate { get; }
 
         /// <inheritdoc/>
         public override TimeSpan? TimeTaken { get; }
