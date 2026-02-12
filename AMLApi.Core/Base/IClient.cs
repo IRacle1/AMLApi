@@ -32,7 +32,7 @@ namespace AMLApi.Core.Base
         /// <param name="statType">Target <see cref="StatType"/>.</param>
         /// <param name="page">Page number.</param>
         /// <returns><see cref="IEnumerable{T}"/> of <see cref="Player"/>'s.</returns>
-        Task<IEnumerable<Player>> FetchPlayerLeaderboard(StatType statType, int page = 1);
+        Task<IReadOnlyList<Player>> FetchPlayerLeaderboard(StatType statType, int page = 1);
 
         /// <summary>
         /// Fetches a maxmode by target id.
@@ -52,7 +52,7 @@ namespace AMLApi.Core.Base
         /// </summary>
         /// <param name="skillPersent">Target skill ratio.</param>
         /// <returns><see cref="IEnumerable{T}"/> of <see cref="MaxMode"/>'s.</returns>
-        Task<IEnumerable<MaxMode>> FetchMaxModeListByRatio(int skillPersent);
+        Task<IReadOnlyList<MaxMode>> FetchMaxModeListByRatio(int skillPersent);
 
         /// <summary>
         /// Fetches target <see cref="Player"/> records.

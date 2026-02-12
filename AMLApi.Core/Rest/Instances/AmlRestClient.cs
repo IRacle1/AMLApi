@@ -40,9 +40,9 @@ namespace AMLApi.Core.Rest.Instances
             return Array.ConvertAll(result, CreatePlayer);
         }
 
-        public override async Task<IEnumerable<RestMaxMode>> FetchMaxModeListByRatio(int skillPersent)
+        public override async Task<IReadOnlyList<RestMaxMode>> FetchMaxModeListByRatio(int skillPersent)
         {
-            return (await FetchMaxModes()).OrderDescending(MaxModeRatioComparer<RestMaxMode>.CreateNew(skillPersent));
+            return (await FetchMaxModes()).OrderDescending(MaxModeRatioComparer<RestMaxMode>.CreateNew(skillPersent)).ToArray();
         }
 
         public override async Task<IReadOnlyCollection<RestRecord>> FetchPlayerRecords(Guid guid)

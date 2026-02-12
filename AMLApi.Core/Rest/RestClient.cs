@@ -22,7 +22,7 @@ namespace AMLApi.Core.Rest
 
         public abstract Task<RestMaxMode> FetchMaxMode(int id);
         public abstract Task<IReadOnlyCollection<RestMaxMode>> FetchMaxModes();
-        public abstract Task<IEnumerable<RestMaxMode>> FetchMaxModeListByRatio(int skillPersent);
+        public abstract Task<IReadOnlyList<RestMaxMode>> FetchMaxModeListByRatio(int skillPersent);
 
         public abstract Task<IReadOnlyCollection<RestRecord>> FetchPlayerRecords(Player player);
         public abstract Task<IReadOnlyCollection<RestRecord>> FetchPlayerRecords(Guid guid);
@@ -42,7 +42,7 @@ namespace AMLApi.Core.Rest
             return await FetchPlayer(guid);
         }
 
-        async Task<IEnumerable<Player>> IClient.FetchPlayerLeaderboard(StatType statType, int page)
+        async Task<IReadOnlyList<Player>> IClient.FetchPlayerLeaderboard(StatType statType, int page)
         {
             return await FetchPlayerLeaderboard(statType, page);
         }
@@ -57,7 +57,7 @@ namespace AMLApi.Core.Rest
             return await FetchMaxModes();
         }
 
-        async Task<IEnumerable<MaxMode>> IClient.FetchMaxModeListByRatio(int skillPersent)
+        async Task<IReadOnlyList<MaxMode>> IClient.FetchMaxModeListByRatio(int skillPersent)
         {
             return await FetchMaxModeListByRatio(skillPersent);
         }
